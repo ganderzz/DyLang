@@ -1,29 +1,57 @@
 <html>
     <head>
         <title>DyLang</title>
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     </head>
     <body>
-
-        <textarea id="code" style="font-size: 14px; width: 50vw; height: 50vh; border: 1px solid #DDD">
+        <div class="row" style="margin-top: 20px;">
+            <div class="small-6 columns">
+                <textarea id="code" style="height: 70vh;">
 ##
- DyLang programming language RPL
+DyLang programming language
+
+Can call functions using: (functionname param1 param2 ...)
+Functions can be vanilla JavaScript functions!
+
+Assign variables using $ symbol: $a = 5
+Use variables: $a
 #
 
-# Hello World Example
+$a = (add (add 'hello' ', ') 'world!')
+(console.log $a)</textarea>
+            </div>
 
-$a = 'hello, world'
-(alert $a)</textarea>
+            <div class="small-6 columns">
+                <span class="label secondary">Result</span>
 
-        <br />
+                <div id="code__result"></div>
+            </div>
+        </div>
 
-        <button style="border: 1px solid #DDD; padding: 10px;">Compile</button>
+        <div class="row">
+            <div class="small-6 columns">
+                <button type="button" class="button expanded">Compile</button>
+            </div>
+        </div>
 
         <hr />
 
-        Check out the <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
+        <div class="row">
+            <div class="small-12">
+                <i class="fa fa-github" aria-hidden="true"></i> Check out the <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
+            </div>
+        </div>
 
         <script>
             window.onload = function() {
+                var resultField = document.querySelector("#code__result");
+
+                console.log = function(value) {
+                    resultField.innerHTML = value;
+                }
+
                 document.querySelector("button").addEventListener("click", function() {
                     var code = document.querySelector("#code").value;
                     var compiled = compile(code);
