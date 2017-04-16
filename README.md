@@ -2,23 +2,29 @@
 Simple programming language that compiles to JavaScript
 
 
-Sample Syntax:
+### Syntax:
 
 ```
-  # Multi
-  # Line
-  # Comment
+  ##
+    Multi
+    Line
+    Comment
+  #
 
+  # Print the result
 
-  # Print the result of (5 / 3) * 4 + 3
+  $a = 6
+  $b = (add 1 2)
+  $result = (add $a (multiply (divide $b $a) $b))
+  $dom = (getElementById 'test')
 
-  $a = (add 1 2)
-  $b = 5
-  (print 'RESULT:' (add $a (multiply (divide $b $a) $b)))
+  (writeTo $dom $result)
 ```
+
+Write the result of 6 + ((3 / 6) 3) to the DOM with id of test
 
 ### Explaination
 
-`$b = 5`  denotes a variable assignment, all variables start with a *$*
+`$a = 6`  denotes a variable assignment, all variables start with a *$*
 
-`$a = (add 1 2)` says that variable `$a` will get the result of `(add 1 2)` which will call the function `add` with parameters `1` and `2`
+`$b = (add 1 2)` says that variable `$b` will get the result of `(add 1 2)` which will call the function `add` with parameters `1` and `2`

@@ -5,10 +5,15 @@ export default function tokenize(input) {
   while(current < input.length) {
     const currentElement = input[current];
     
-    if(/\#/.test(currentElement)) {
-      while(input[current] !== "\n") {
+    if(currentElement === "#") {
+      current++;
+      if(input[current] === "#") {
         current++;
+        while(input[current++] !== "#") {}
+      } else {
+        while(input[current++] !== "\n") {}
       }
+      
       continue;
     }
     
