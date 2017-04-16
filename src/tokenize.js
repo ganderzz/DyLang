@@ -102,7 +102,7 @@ export default function tokenize(input) {
       continue;
     }
     
-    const characters = /[a-z]/i;
+    const characters = /[a-z\.]/i;
     if(characters.test(currentElement)) {
       let value = currentElement;
       

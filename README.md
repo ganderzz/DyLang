@@ -16,7 +16,7 @@ Simple programming language that compiles to JavaScript
   $a = 6
   $b = (add 1 2)
   $result = (add $a (multiply (divide $b $a) $b))
-  $dom = (getElementById 'test')
+  $dom = (document.getElementById 'test')
 
   (writeTo $dom $result)
 ```
