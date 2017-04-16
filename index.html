@@ -24,9 +24,11 @@ $a = (add (add 'hello' ', ') 'world!')
             </div>
 
             <div class="small-6 columns">
+                <div class="callout alert hide" id="error__result"></div>
+
                 <span class="label secondary">Result</span>
 
-                <div id="code__result"></div>
+                <div id="code__result" style="overflow-y: auto; max-height: 400px;"></div>
             </div>
         </div>
 
@@ -47,6 +49,7 @@ $a = (add (add 'hello' ', ') 'world!')
         <script>
             window.onload = function() {
                 var resultField = document.querySelector("#code__result");
+                var errorField = document.querySelector("#error__result");
 
                 console.log = function(value) {
                     resultField.innerHTML = value;
@@ -54,9 +57,18 @@ $a = (add (add 'hello' ', ') 'world!')
 
                 document.querySelector("button").addEventListener("click", function() {
                     var code = document.querySelector("#code").value;
-                    var compiled = compile(code);
+                    
+                    resultField.innerHTML = "";
+                    errorField.classList.add("hide");
 
-                    eval(compiled)
+                    try {
+                        var compiled = compile(code);
+
+                        eval(compiled);
+                    } catch(exception) {
+                        errorField.classList.remove("hide");
+                        errorField.innerHTML = exception;
+                    }
                 });
             }
         </script>
