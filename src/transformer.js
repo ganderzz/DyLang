@@ -1,3 +1,5 @@
+import traverser from "./Utilities/traverser";
+
 export default function transformer(ast) {
   let newAst = {
     type: "Program",
