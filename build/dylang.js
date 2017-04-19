@@ -248,9 +248,10 @@ function tokenize(input) {
 
   const rowsLength = rows.length;
   for (let i = 0; i < rowsLength; i++) {
-
     const colLength = rows[i].length;
     let current = 0;
+    let parenCount = 0;
+
     while (current < colLength) {
       const currentElement = rows[i][current];
 
@@ -300,10 +301,14 @@ function tokenize(input) {
 
         while (/[a-z]/i.test(rows[i][++current])) {
           if (current >= colLength) {
-            throw new TypeError("Unexpected end of input in row " + (i + 1));
+            throw new TypeError("Unexpected end of variable on line " + (i + 1) + ":" + current);
           }
 
           variableName += rows[i][current];
+        }
+
+        if (!variableName) {
+          throw new Error("Undeclared variable being used on line " + (i + 1) + ":" + current);
         }
 
         tokens.push({
@@ -315,6 +320,10 @@ function tokenize(input) {
       }
 
       if (currentElement === "=") {
+        if (tokens[tokens.length - 1].type !== "variable") {
+          throw new Error("Cannot assign value to value on line " + (i + 1) + ":" + current);
+        }
+
         current++;
 
         tokens.push({
@@ -329,7 +338,7 @@ function tokenize(input) {
 
         while (rows[i][++current] !== "'") {
           if (current >= colLength) {
-            throw new SyntaxError("Expecting a closing ' in row " + (i + 1));
+            throw new SyntaxError("Expecting a closing ' on line " + (i + 1) + ":" + current);
           }
 
           value += rows[i][current];
@@ -345,6 +354,7 @@ function tokenize(input) {
 
       if (currentElement === "(") {
         current++;
+        parenCount++;
 
         tokens.push({
           type: "paren",
@@ -356,6 +366,11 @@ function tokenize(input) {
 
       if (currentElement === ")") {
         current++;
+        if (parenCount === 0) {
+          throw new Error("Expecting ( on line " + (i + 1) + ":" + current);
+        }
+
+        parenCount--;
 
         tokens.push({
           type: "paren",
@@ -382,10 +397,18 @@ function tokenize(input) {
         continue;
       }
 
-      throw new TypeError("Invalid symbol " + rows[i][current] + " given in row: " + (i + 1));
+      throw new TypeError("Invalid symbol " + rows[i][current] + " given on line " + (i + 1) + ":" + current);
+    }
+
+    if (parenCount > 0) {
+      throw new Error("Expecting ) on line " + (i + 1));
     }
   }
-  console.error(tokens);
+
+  if (isComment) {
+    throw new Error("A multi-line comment was started, but never closed");
+  }
+
   return tokens;
 }
 

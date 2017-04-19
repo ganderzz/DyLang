@@ -5,144 +5,182 @@ export default function tokenize(input) {
   let isComment = false;
 
   const rowsLength = rows.length;
-  for(let i = 0; i < rowsLength; i++) {
-
+  for (let i = 0; i < rowsLength; i++) {
     const colLength = rows[i].length;
     let current = 0;
-    while(current < colLength) {
+    let parenCount = 0;
+
+    while (current < colLength) {
       const currentElement = rows[i][current];
 
-      if(isComment && currentElement !== "#") {
+      if (isComment && currentElement !== "#") {
         current++;
         continue;
-      } else if(isComment && currentElement === "#") {
+      } else if (isComment && currentElement === "#") {
         isComment = false;
         current++;
         continue;
-      }  
+      }
 
-      if(currentElement === "#") {
-        if(rows[i][++current] === "#") {
+      if (currentElement === "#") {
+        if (rows[i][++current] === "#") {
           current++;
           isComment = true;
           continue;
         }
-        
+
         break;
       }
 
-      if(/\s/.test(currentElement)) {
+      if (/\s/.test(currentElement)) {
         current++;
         continue;
       }
 
-      if(/[0-9]/.test(currentElement)) {
+      if (/[0-9]/.test(currentElement)) {
         let value = "";
-        
-        while(/[0-9]/.test(rows[i][current])) {
+
+        while (/[0-9]/.test(rows[i][current])) {
           value += rows[i][current];
           current++;
         }
         current++;
-        
+
         tokens.push({
           type: "number",
           value: parseInt(value, 10)
         });
-        
+
         continue;
       }
 
-    if(currentElement === "$") {
-      let variableName = "";
-      
-      while(/[a-z]/i.test(rows[i][++current])) {
-        if(current >= colLength) {
-          throw new TypeError("Unexpected end of input in row " + (i + 1));
+      if (currentElement === "$") {
+        let variableName = "";
+
+        while (/[a-z]/i.test(rows[i][++current])) {
+          if (current >= colLength) {
+            throw new TypeError(
+              "Unexpected end of variable on line " + (i + 1) + ":" + current
+            );
+          }
+
+          variableName += rows[i][current];
         }
 
-        variableName += rows[i][current];
-      }
-      
-      tokens.push({
-        type: "variable",
-        value: variableName
-      });
-      
-      continue;
-    }
-    
-    if(currentElement === "=") {
-      current++;
-
-      tokens.push({
-        type: "assignment"
-      });
-
-      continue;
-    }
-    
-    if(currentElement === "'") {
-      let value = "";
-      
-      while(rows[i][++current] !== "'") {
-        if(current >= colLength) {
-          throw new SyntaxError("Expecting a closing ' in row " + (i + 1));
+        if (!variableName) {
+          throw new Error(
+            "Undeclared variable being used on line " + (i + 1) + ":" + current
+          );
         }
 
-        value += rows[i][current];
+        tokens.push({
+          type: "variable",
+          value: variableName
+        });
+
+        continue;
       }
-      current++;
-      
-      tokens.push({
-        type: "string",
-        value: value
-      });
-      continue;
-    }
-    
-    if(currentElement === "(") {
-      current++;
 
-      tokens.push({
-        type: "paren",
-        value: currentElement
-      });
-      
-      continue;
-    }
-    
-    if(currentElement === ")") {
-      current++;
+      if (currentElement === "=") {
+        if (tokens[tokens.length - 1].type !== "variable") {
+          throw new Error(
+            "Cannot assign value to value on line " + (i + 1) + ":" + current
+          );
+        }
 
-      tokens.push({
-        type: "paren",
-        value: currentElement
-      });
-      
-      continue;
-    }
-    
-    const characters = /[a-z\.]/i;
-    if(characters.test(currentElement)) {
-      let value = currentElement;
-      
-      while(characters.test(rows[i][++current])) {
-        value += rows[i][current];
+        current++;
+
+        tokens.push({
+          type: "assignment"
+        });
+
+        continue;
       }
-      current++;
-      
-      tokens.push({
-        type: "name",
-        value: value
-      });
-      
-      continue;
+
+      if (currentElement === "'") {
+        let value = "";
+
+        while (rows[i][++current] !== "'") {
+          if (current >= colLength) {
+            throw new SyntaxError(
+              "Expecting a closing ' on line " + (i + 1) + ":" + current
+            );
+          }
+
+          value += rows[i][current];
+        }
+        current++;
+
+        tokens.push({
+          type: "string",
+          value: value
+        });
+        continue;
+      }
+
+      if (currentElement === "(") {
+        current++;
+        parenCount++;
+
+        tokens.push({
+          type: "paren",
+          value: currentElement
+        });
+
+        continue;
+      }
+
+      if (currentElement === ")") {
+        current++;
+        if (parenCount === 0) {
+          throw new Error("Expecting ( on line " + (i + 1) + ":" + current);
+        }
+
+        parenCount--;
+
+        tokens.push({
+          type: "paren",
+          value: currentElement
+        });
+
+        continue;
+      }
+
+      const characters = /[a-z\.]/i;
+      if (characters.test(currentElement)) {
+        let value = currentElement;
+
+        while (characters.test(rows[i][++current])) {
+          value += rows[i][current];
+        }
+        current++;
+
+        tokens.push({
+          type: "name",
+          value: value
+        });
+
+        continue;
+      }
+
+      throw new TypeError(
+        "Invalid symbol " +
+          rows[i][current] +
+          " given on line " +
+          (i + 1) +
+          ":" +
+          current
+      );
     }
 
-    throw new TypeError("Invalid symbol " + rows[i][current] + " given in row: " + (i + 1));
+    if (parenCount > 0) {
+      throw new Error("Expecting ) on line " + (i + 1));
     }
   }
-  console.error(tokens)
+
+  if (isComment) {
+    throw new Error("A multi-line comment was started, but never closed");
+  }
+
   return tokens;
 }
