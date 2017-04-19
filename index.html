@@ -3,7 +3,15 @@
         <title>DyLang</title>
 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/mode/javascript/javascript.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/continuecomment.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/edit/matchbrackets.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/comment.js"></script>
     </head>
     <body>
         <div class="row" style="margin-top: 20px;">
@@ -51,6 +59,10 @@ $a = (add (add 'hello' ', ') 'world!')
                 var resultField = document.querySelector("#code__result");
                 var errorField = document.querySelector("#error__result");
 
+                var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                    lineNumbers: true
+                });
+
                 console.log = function(value) {
                     resultField.innerHTML = value;
                 }
@@ -62,7 +74,7 @@ $a = (add (add 'hello' ', ') 'world!')
                     errorField.classList.add("hide");
 
                     try {
-                        var compiled = new dylang(code);
+                        var compiled = new dylang(editor.getValue());
 
                         eval(compiled.result);
                     } catch(exception) {

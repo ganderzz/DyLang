@@ -321,7 +321,7 @@ function tokenize(input) {
 
       if (currentElement === "=") {
         if (tokens[tokens.length - 1].type !== "variable") {
-          throw new Error("Cannot assign value to value on line " + (i + 1) + ":" + current);
+          throw new Error("Cannot assign value on line " + (i + 1) + ":" + current);
         }
 
         current++;
