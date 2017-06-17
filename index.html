@@ -74,9 +74,9 @@ $a = (add (add 'hello' ', ') 'world!')
                     errorField.classList.add("hide");
 
                     try {
-                        var compiled = new dylang(editor.getValue());
+                        var compiled = dylang(editor.getValue());
 
-                        eval(compiled.result);
+                        eval(compiled);
                     } catch(exception) {
                         errorField.classList.remove("hide");
                         errorField.innerHTML = exception;

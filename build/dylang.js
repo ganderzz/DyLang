@@ -7,7 +7,7 @@ function generator(node) {
       return node.body.map(generator).join("");
 
     case "ExpressionStatement":
-      return generator(node.expression) + ";";
+      return generator(node.expression) + "\n";
 
     case "CallExpression":
       return generator(node.callee) + "(" + node.arguments.map(generator) + ")";
@@ -17,7 +17,7 @@ function generator(node) {
 
     case "Variable":
       if (node.value.length > 0) {
-        return `var ${generator(node.name)} = ${node.value.map(generator)};`;
+        return `var ${generator(node.name)} = ${node.value.map(generator)}\n`;
       }
       return generator(node.name);
 
@@ -412,62 +412,14 @@ function tokenize(input) {
   return tokens;
 }
 
-function add(a, b) {
-  return a + b;
-}
-function subtract(a, b) {
-  return a - b;
-}
-function multiply(a, b) {
-  return a * b;
-}
-function divide(a, b) {
-  return a / b;
-}
-function print(...input) {
-  console.log(input.join(" "));
-}
-function writeTo(elem, input) {
-  elem.innerHTML = input;
-}
+var index = (code => {
+    const t = tokenize(code);
+    const p = parser(t);
+    const tr = transformer(p);
+    const g = generator(tr);
 
-window.add = add;
-window.subtract = subtract;
-window.multiple = multiply;
-window.divide = divide;
-window.print = print;
-window.writeTo = writeTo;
-
-var index = (() => {
-  function compiler(code) {
-    const t = this.tokenize(code);
-    const p = this.parser(t);
-    const tr = this.transformer(p);
-    const g = this.generator(tr);
-
-    return {
-      result: g
-    };
-  }
-
-  compiler.prototype.tokenize = function (input) {
-    return tokenize(input);
-  };
-
-  compiler.prototype.parser = function (input) {
-    return parser(input);
-  };
-
-  compiler.prototype.transformer = function (input) {
-    return transformer(input);
-  };
-
-  compiler.prototype.generator = function (input) {
-    return generator(input);
-  };
-
-  return compiler;
-})();
+    return g;
+});
 
 return index;
 

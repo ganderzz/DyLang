@@ -4,7 +4,7 @@ export default function generator(node) {
       return node.body.map(generator).join("");
     
     case "ExpressionStatement":
-      return generator(node.expression) + ";";
+      return generator(node.expression) + "\n";
     
     case "CallExpression":
       return (
@@ -21,7 +21,7 @@ export default function generator(node) {
       
     case "Variable":
       if(node.value.length > 0) {
-        return `var ${generator(node.name)} = ${node.value.map(generator)};`
+        return `var ${generator(node.name)} = ${node.value.map(generator)}\n`
       }
       return generator(node.name);
       
