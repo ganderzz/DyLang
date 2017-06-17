@@ -1,4 +1,8 @@
-# DyLang *Experimental*
+# DyLang
+*Experiemental*
+
+[![Build Status](https://travis-ci.org/ganderzz/DyLang.svg?branch=master)](https://travis-ci.org/ganderzz/DyLang)
+
 Simple programming language that compiles to JavaScript. This is an ever growing project as I dive into how compilers work.
 
 **Based on [The Super Tiny Compiler](https://github.com/thejameskyle/the-super-tiny-compiler)**
