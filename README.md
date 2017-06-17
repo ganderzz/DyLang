@@ -1,4 +1,4 @@
-# DyLang :exclamation:
+# DyLang
 *Experiemental*
 
 [![Build Status](https://travis-ci.org/ganderzz/DyLang.svg?branch=master)](https://travis-ci.org/ganderzz/DyLang)
