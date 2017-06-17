@@ -1,4 +1,4 @@
-# DyLang *Experimental*
+# DyLang :exclamation:
 Simple programming language that compiles to JavaScript. This is an ever growing project as I dive into how compilers work.
 
 **Based on [The Super Tiny Compiler](https://github.com/thejameskyle/the-super-tiny-compiler)**
