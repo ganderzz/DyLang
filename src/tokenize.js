@@ -38,13 +38,13 @@ export default function tokenize(input) {
       }
 
       if (/[0-9]/.test(currentElement)) {
-        let value = "";
+        let value = rows[i][current];
 
+        current++
         while (/[0-9]/.test(rows[i][current])) {
           value += rows[i][current];
           current++;
         }
-        current++;
 
         tokens.push({
           type: "number",
@@ -57,14 +57,10 @@ export default function tokenize(input) {
       if (currentElement === "$") {
         let variableName = "";
 
-        while (/[a-z]/i.test(rows[i][++current])) {
-          if (current >= colLength) {
-            throw new TypeError(
-              "Unexpected end of variable on line " + (i + 1) + ":" + current
-            );
-          }
-
+        current++;
+        while (current < colLength && /[a-z]/i.test(rows[i][current])) {
           variableName += rows[i][current];
+          current++;
         }
 
         if (!variableName) {
@@ -131,11 +127,11 @@ export default function tokenize(input) {
       }
 
       if (currentElement === ")") {
-        current++;
         if (parenCount === 0) {
           throw new Error("Expecting ( on line " + (i + 1) + ":" + current);
         }
 
+        current++;
         parenCount--;
 
         tokens.push({
@@ -153,11 +149,23 @@ export default function tokenize(input) {
         while (characters.test(rows[i][++current])) {
           value += rows[i][current];
         }
-        current++;
+        //current++;
 
         tokens.push({
           type: "name",
           value: value
+        });
+
+        continue;
+      }
+      
+      const signs = /[\+\-\*\/\%]/i;
+      if (currentElement.match(signs)) {
+        current++;
+
+        tokens.push({
+          type: "operator",
+          value: currentElement
         });
 
         continue;
@@ -172,10 +180,10 @@ export default function tokenize(input) {
           current
       );
     }
-
-    if (parenCount > 0) {
-      throw new Error("Expecting ) on line " + (i + 1));
-    }
+    
+    tokens.push({
+      type: "end"
+    });
   }
 
   if (isComment) {

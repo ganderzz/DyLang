@@ -24,11 +24,11 @@
 #
 
 # Print the result
-$a = 6
-$b = 2
+$a = 2 + 3
+$b = 10 / $a
 $result = (Math.pow $a $b)
 
-(console.log $result) # 36</textarea>
+(console.log $result) # 25</textarea>
             </div>
 
             <div class="small-6 columns">
@@ -75,11 +75,14 @@ $result = (Math.pow $a $b)
 
                     try {
                         var compiled = dylang(editor.getValue());
+                        console.error(compiled)
 
                         eval(compiled);
                     } catch(exception) {
                         errorField.classList.remove("hide");
                         errorField.innerHTML = exception;
+
+                        throw exception;
                     }
                 });
             }

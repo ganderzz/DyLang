@@ -4,10 +4,10 @@ export default function transformer(ast) {
   let newAst = {
     type: "Program",
     body: []
-  }
-  
+  };
+
   ast._context = newAst.body;
-  
+
   traverser(ast, {
     NumberLiteral: {
       enter(node, parent) {
@@ -17,7 +17,7 @@ export default function transformer(ast) {
         });
       }
     },
-    
+
     StringLiteral: {
       enter(node, parent) {
         parent._context.push({
@@ -26,7 +26,16 @@ export default function transformer(ast) {
         });
       }
     },
-    
+
+    Operator: {
+      enter(node, parent) {
+        parent._context.push({
+          type: "Operator",
+          value: node.token
+        });
+      }
+    },
+
     Variable: {
       enter(node, parent) {
         let expression = {
@@ -37,37 +46,36 @@ export default function transformer(ast) {
           },
           value: []
         };
-        
+
         node._context = expression.value;
-        
-        if(node.value !== "CallExpression") {
+
+        if (node.value !== "CallExpression") {
           expression = {
             type: "Assignment",
             expression: expression
-          }
+          };
         }
-        
-        if(!node.value) {
+
+        if (!node.value) {
           expression = {
             type: "Variable",
             name: node.name
-          }
+          };
         }
-        
+
         parent._context.push(expression);
       }
     },
-    
-  CallExpression: {
-      enter(node, parent) {
 
+    CallExpression: {
+      enter(node, parent) {
         let expression = {
           type: "CallExpression",
           callee: {
             type: "Identifier",
-            name: node.name,
+            name: node.name
           },
-          arguments: [],
+          arguments: []
         };
 
         node._context = expression.arguments;
@@ -75,14 +83,14 @@ export default function transformer(ast) {
         if (parent.type !== "CallExpression") {
           expression = {
             type: "ExpressionStatement",
-            expression: expression,
+            expression: expression
           };
         }
 
         parent._context.push(expression);
       }
-    }
+    },
   });
-  
+
   return newAst;
 }
