@@ -10,19 +10,18 @@ Simple programming language that compiles to JavaScript. This is an ever growing
 ### Syntax
 
 ```
-  ##
+##
     Multi
     Line
     Comment
-  #
+#
 
-  # Print the result
+# Print the result
+$a = 2 + 3
+$b = 10 / $a
+$result = (Math.pow $a $b)
 
-  $a = 6
-  $b = 2
-  $result = (Math.pow $a $b)
-
-  (console.log $result) # 36
+(console.log $result) # 25
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
 
