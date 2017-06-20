@@ -75,11 +75,14 @@ $result = (Math.pow $a $b)
 
                     try {
                         var compiled = dylang(editor.getValue());
+                        console.error(compiled)
 
                         eval(compiled);
                     } catch(exception) {
                         errorField.classList.remove("hide");
                         errorField.innerHTML = exception;
+
+                        throw exception;
                     }
                 });
             }
