@@ -90,18 +90,6 @@ export default function transformer(ast) {
         parent._context.push(expression);
       }
     },
-
-    Scope: {
-      enter(node, parent) {
-        let expression = {
-          type: "Scope",
-          value: []
-        };
-
-        node._context = expression.value;
-        parent._context.push(expression);
-      }
-    }
   });
 
   return newAst;

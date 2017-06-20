@@ -18,9 +18,6 @@ export default function generator(node) {
       }
       return generator(node.name);
 
-    case "Scope":
-      return node.value.map(generator).join(", ");
-
     case "Identifier":
       return node.name;
 

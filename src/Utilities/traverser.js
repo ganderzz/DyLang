@@ -23,10 +23,6 @@ export default function traverser(ast, visitor) {
       case "CallExpression":
         traverseArray(node.params, node);
         break;
-      
-      case "Scope":
-        traverseArray(node.value, node);
-        break;
 
       case "Variable":
         traverseArray(node.value, node);
