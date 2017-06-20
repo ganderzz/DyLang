@@ -57,14 +57,10 @@ export default function tokenize(input) {
       if (currentElement === "$") {
         let variableName = "";
 
-        while (/[a-z]/i.test(rows[i][++current])) {
-          if (current >= colLength) {
-            throw new TypeError(
-              "Unexpected end of variable on line " + (i + 1) + ":" + current
-            );
-          }
-
+        current++;
+        while (current < colLength && /[a-z]/i.test(rows[i][current])) {
           variableName += rows[i][current];
+          current++;
         }
 
         if (!variableName) {
