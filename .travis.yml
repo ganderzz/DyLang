@@ -1,25 +1,24 @@
 language: node_js
 node_js:
-  - "7"
-  - "6"
-
+- '7'
+- '6'
 cache:
   directories:
-    - "node_modules"
-
+  - node_modules
 before_install:
-  - openssl aes-256-cbc -K $encrypted_d1d5f850c97f_key -iv $encrypted_d1d5f850c97f_iv -in deploy-key.enc -out ../deploy-key -d
-
+- openssl aes-256-cbc -K $encrypted_d1d5f850c97f_key -iv $encrypted_d1d5f850c97f_iv
+  -in deploy-key.enc -out ../deploy-key -d
 install:
-  - npm install
-
+- npm install
 script:
-  - npm test
-  - ls
-
+- npm test
+- ls
 deploy:
   provider: script
   skip_cleanup: true
-  script: "./bin/build_docs.sh"
+  script: ./bin/build_docs.sh
   on:
     branch: master
+env:
+  global:
+    secure: AsPpDPIJhLy830361ggL2WyY1LHI+5XZ4QOabTsT8YuN83GtwOCw4Fb5QbE0X+LXmeWguF5Da2vuOgxUKoZzLza/o4Tz+K6uE02oYJunhLBYU8BJ5YkSnJJwq2Oq7zancfahIophp6DEG2Cp2u1YRd4LXL8ezhPk8WU6yU96XpTu6I1LcgDLok/7yBuiIzA2TEcFojvK1+b5XC4S8d85PCpNZdcUJHyNCXesQgAXdAFXIFQeHgCNBGeANdawpWIbaCgMvJgXh1aD7h1GYwIjZFQI5DrBnlPq8plO2E8HSITs5GCY3B3jBPOGlt65BVtrc+N8Fk7rQfs/+Naar/kTaK0EVcSNGSmtz8c5WLKzA0SCzsRJ60BMeP+DsMqRVWWZnq66zB+TbFNXDx9ugD12pyF5WSDgPx2uTLPXThIvco06G5k6aEkM5+rAVdxsf/3U7APvRAF08T3wtd6LcPZn3EbWO4h3NeTcIvXIcg8dUBHRhyOmZQ2pImFKQ0c663iMqsf9y8KX9tqm8xsvSbahR4UE4USmm8mCU8WWXmm0vSfWHSGKW9eD9W1/7vRWNXwnOVBA/nO2RyO13EU1ZBgmgePJS7+3Xv74lxPkSblX7UpbmllSQ2Xltm0W8wVbZ8r+sA6RafEh3ED7PrCbyRLfPQ44bY8owW7nnIp0C99gjfY=
