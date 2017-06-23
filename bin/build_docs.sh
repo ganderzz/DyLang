@@ -7,7 +7,7 @@ git config credential.helper "store --file=.git/credentials"
 echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 
 git branch
-git pull origin gh-pages
+git pull origin gh-pages --rebase
 git branch
 git checkout gh-pages
 
