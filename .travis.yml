@@ -12,7 +12,6 @@ install:
 - npm install
 script:
 - npm test
-- ls
 deploy:
   provider: script
   skip_cleanup: true
