@@ -14,9 +14,7 @@ install:
   - npm install
 
 script:
-  - npm run build
   - npm test
-  - git stash
 
 deploy:
   provider: script
