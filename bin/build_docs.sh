@@ -16,6 +16,8 @@ cd ./docs
 git init
 git remote add origin https://github.com/ganderzz/DyLang.git
 git fetch
+git checkout -t origin/gh-pages
+
 git add .
 git commit -m "Updating Docs"
 
