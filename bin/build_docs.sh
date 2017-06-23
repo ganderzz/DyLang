@@ -11,6 +11,8 @@ git checkout gh-pages
 
 npm run build
 
-git add -A
+ls
+
+git add .
 git commit -m "Updating Docs"
 git push origin gh-pages
