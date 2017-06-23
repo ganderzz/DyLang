@@ -7,17 +7,16 @@ DIR=./out
 git config --global user.name "Travis-CI"
 git config --global user.email "Travis@ci.com"
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-
-git clone --branch gh-pages --depth=1 \
-    https://${GH_TOKEN}:@github.com \
-    $DIR
+git config credential.helper "store --file=.git/credentials"
+echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 
 npm run build
-mv ./docs/* $DIR
+cd ./docs
 
-cd $DIR
+git init
+git remote add origin https://github.com/ganderzz/DyLang.git
 
 git add .
 git commit -m "Updating Docs"
 
-git push --force --quiet "https://${GH_TOKEN}:@github.com" > /dev/null 2>&1
+git push --force --quiet
