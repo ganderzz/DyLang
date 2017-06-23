@@ -3,12 +3,10 @@
 set -e
 
 pushd ./docs
-git stash
 git init
 git remote add origin https://github.com/ganderzz/DyLang.git
 git fetch
 git checkout -t origin/gh-pages || exit 0;
-git stash apply
 
 git config --global user.name "Travis-CI"
 git config --global user.email "Travis@ci.com"
