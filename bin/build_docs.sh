@@ -2,20 +2,22 @@
 
 set -e
 
-git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-
-rm -rf out || exit 0;
-mkdir out
-npm run build
-mv ./docs/* ./out
-
-pushd out
-git init
+DIR=./out
 
 git config --global user.name "Travis-CI"
 git config --global user.email "Travis@ci.com"
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+git clone --branch gh-pages --depth=1 \
+    https://${GH_TOKEN}:@github.com \
+    $DIR
+
+npm run build
+mv ./docs/* $DIR
+
+cd $DIR
 
 git add .
 git commit -m "Updating Docs"
 
-git push --force --quiet "https://${GH_TOKEN}:@github.com" master:gh-pages > /dev/null 2>&1
+git push --force --quiet "https://${GH_TOKEN}:@github.com" > /dev/null 2>&1
