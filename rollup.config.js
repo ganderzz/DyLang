@@ -25,5 +25,5 @@ export default {
     }, minify)
   ],
   moduleName: "dylang",
-  dest: "./build/dylang.js"
+  dest: "./docs/dylang.js"
 };
