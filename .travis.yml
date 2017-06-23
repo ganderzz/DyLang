@@ -20,6 +20,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ./bin/build_docs.sh
+  script: "./bin/build_docs.sh"
   on:
     branch: master
