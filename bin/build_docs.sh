@@ -22,4 +22,4 @@ git add .
 git commit -m "Updating Docs"
 
 git branch
-git push --force --quiet origin/gh-pages
+git push --force --quiet
