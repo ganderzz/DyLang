@@ -6,13 +6,13 @@ git config --global user.name "Travis-CI"
 git config credential.helper "store --file=.git/credentials"
 echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 
-git branch
-
-git pull origin master
-git checkout master
+git pull origin gh-pages
+git checkout gh-pages
 
 npm run build
 
+mv -v ./docs ./
+
 git add -A .
 git commit -m "Updating Docs"
-git push origin master
+git push origin gh-pages
