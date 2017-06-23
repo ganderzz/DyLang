@@ -2,10 +2,7 @@
 
 set -e
 
-DIR=./out
-
-npm run build
-cd ./docs
+pushd ./docs
 
 git init
 git remote add origin https://github.com/ganderzz/DyLang.git
@@ -17,6 +14,10 @@ git config --global user.email "Travis@ci.com"
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git config credential.helper "store --file=.git/credentials"
 echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+
+popd
+npm run build
+pushd ./docs
 
 git add .
 git commit -m "Updating Docs"
