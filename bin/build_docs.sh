@@ -2,7 +2,6 @@
 
 set -e
 
-git config --global user.name "Travis-CI"
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
 rm -rf out || exit 0;
@@ -12,6 +11,10 @@ mv ./docs/* ./out
 
 pushd out
 git init
+
+git config --global user.name "Travis-CI"
+git config --global user.email "Travis@ci.com"
+
 git add .
 git commit -m "Updating Docs"
 
