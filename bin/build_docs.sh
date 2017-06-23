@@ -9,8 +9,8 @@ echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 
 git branch
 
-git fetch
-git checkout origin master
+git pull origin master
+git checkout master
 
 npm run build
 
