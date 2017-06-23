@@ -7,9 +7,18 @@ cache:
   directories:
     - "node_modules"
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_d1d5f850c97f_key -iv $encrypted_d1d5f850c97f_iv -in deploy-key.enc -out ../deploy-key -d
+
 install:
   - npm install
 
 script:
   - npm run build
   - npm test
+
+deploy:
+  provider: script
+  script: ./bin/build_docs.sh $TRAVIS_PULL_REQUEST
+  on:
+    branch: master
