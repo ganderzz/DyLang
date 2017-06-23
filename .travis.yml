@@ -19,7 +19,6 @@ script:
 
 deploy:
   provider: script
-  script:
-    - npm run build
+  script: ./bin/build_docs.sh $TRAVIS_PULL_REQUEST
   on:
     branch: master
