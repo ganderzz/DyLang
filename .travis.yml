@@ -16,9 +16,10 @@ install:
 script:
   - npm run build
   - npm test
+  - git stash
 
 deploy:
   provider: script
-  script: ./bin/build_docs.sh $TRAVIS_PULL_REQUEST
+  script: ./bin/build_docs.sh
   on:
     branch: master
