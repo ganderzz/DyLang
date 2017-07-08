@@ -6,7 +6,6 @@ pushd ./docs
 git init
 git remote add origin https://github.com/ganderzz/DyLang.git
 git fetch
-git stash
 git checkout -t origin/gh-pages || exit 0;
 
 git config --global user.name "Travis-CI"
