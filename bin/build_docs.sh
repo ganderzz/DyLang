@@ -5,8 +5,6 @@ set -e
 mkdir ../docs
 pushd ../docs
 
-BRANCH=`git rev-parse --abbrev-ref HEAD`
-
 git init
 git remote add origin https://github.com/ganderzz/DyLang.git
 git fetch
