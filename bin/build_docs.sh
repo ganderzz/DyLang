@@ -24,6 +24,6 @@ cp -a ./docs/. ../docs
 pushd ../docs
 
 git add .
-git commit -m "Updating Docs"
+git commit -m "Updating Docs" || exit 0;
 
 git push --force --quiet || exit 0;
