@@ -19,7 +19,7 @@ echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 popd
 npm run build
 rm ../docs/*
-cp ./docs ../docs
+cp -a ./docs/. ../docs
 pushd ../docs
 
 git add .
