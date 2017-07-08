@@ -31,6 +31,7 @@ export default function traverser(ast, visitor) {
       case "StringLiteral":
       case "NumberLiteral":
       case "Operator":
+      case "Identifier":
         break;
 
       default:

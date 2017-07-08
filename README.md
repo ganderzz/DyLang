@@ -17,11 +17,11 @@ Simple programming language that compiles to JavaScript. This is an ever growing
 #
 
 # Print the result
-$a = 2 + 3
-$b = 10 / $a
-$result = (Math.pow $a $b)
+let a = 2 + 3
+let b = 10 / a
+let result = (Math.pow a b) # Math.pow(5, 2)
 
-(console.log $result) # 25
+(console.log result) # 25
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
 

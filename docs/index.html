@@ -24,11 +24,11 @@
 #
 
 # Print the result
-$a = 2 + 3
-$b = 10 / $a
-$result = (Math.pow $a $b) # Math.pow(5, 2)
+let a = 2 + 3
+let b = 10 / a
+let result = (Math.pow a b) # Math.pow(5, 2)
 
-(console.log $result) # 25</textarea>
+(console.log result) # 25</textarea>
             </div>
 
             <div class="small-6 columns">
@@ -75,7 +75,6 @@ $result = (Math.pow $a $b) # Math.pow(5, 2)
 
                     try {
                         var compiled = dylang(editor.getValue());
-                        console.error(compiled)
 
                         eval(compiled);
                     } catch(exception) {
