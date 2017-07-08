@@ -2,6 +2,7 @@
 
 set -e
 
+rm -rf ../docs
 mkdir ../docs
 pushd ../docs
 
@@ -26,6 +27,3 @@ git add .
 git commit -m "Updating Docs"
 
 git push --force --quiet || exit 0;
-
-popd
-rm -rf ../docs
