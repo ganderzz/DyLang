@@ -1,3 +1,7 @@
+function lookAhead(row, tokenString) {
+  return row.indexOf(tokenString);
+}
+
 export default function tokenize(input) {
   const tokens = [];
 
@@ -54,10 +58,15 @@ export default function tokenize(input) {
         continue;
       }
 
-      if (currentElement === "$") {
+      if (currentElement === "l") {
         let variableName = "";
 
-        current++;
+        if(rows[i][current+1] !== "e" && rows[i][current+2] !== "t") {
+          continue;
+        }
+
+        // Skip 4 to ignore spacing
+        current += 4;
         while (current < colLength && /[a-z]/i.test(rows[i][current])) {
           variableName += rows[i][current];
           current++;
@@ -80,7 +89,7 @@ export default function tokenize(input) {
       if (currentElement === "=") {
         if (tokens[tokens.length - 1].type !== "variable") {
           throw new Error(
-            "Cannot assign value on line " + (i + 1) + ":" + current
+            "Cannot assign value to non variable on line " + (i + 1) + ":" + current
           );
         }
 
@@ -146,13 +155,14 @@ export default function tokenize(input) {
       if (characters.test(currentElement)) {
         let value = currentElement;
 
-        while (characters.test(rows[i][++current])) {
+        current++;
+        while (rows[i][current] && characters.test(rows[i][current])) {
           value += rows[i][current];
+          current++;
         }
-        //current++;
 
         tokens.push({
-          type: "name",
+          type: "identifier",
           value: value
         });
 

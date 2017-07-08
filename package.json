@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf build; mkdir build && ./node_modules/.bin/rollup -c",
+    "build:watch": "./node_modules/.bin/rollup -c --watch",
     "test": "echo \"Error: no test specified\" && true"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ganderzz/DyLang.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Dylan Paulus",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ganderzz/DyLang/issues"
   },
@@ -26,6 +27,7 @@
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.0.0",
     "uglify-js": "^3.0.17"
   }
 }

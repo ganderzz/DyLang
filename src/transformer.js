@@ -36,13 +36,22 @@ export default function transformer(ast) {
       }
     },
 
+    Identifier: {
+      enter(node, parent) {
+        parent._context.push({
+          type: "Identifier",
+          value: node.value
+        });
+      }
+    },
+
     Variable: {
       enter(node, parent) {
         let expression = {
           type: "Variable",
           name: {
             type: "Identifier",
-            name: node.name
+            value: node.name
           },
           value: []
         };
@@ -73,7 +82,7 @@ export default function transformer(ast) {
           type: "CallExpression",
           callee: {
             type: "Identifier",
-            name: node.name
+            value: node.name
           },
           arguments: []
         };

@@ -1,6 +1,5 @@
 export default function parser(tokens) {
   let current = 0;
-  console.error(tokens)
 
   function walk() {
     let token = tokens[current];
@@ -47,6 +46,13 @@ export default function parser(tokens) {
         }
 
         return node;
+
+      case "identifier":
+        current++;
+        return {
+          type: "Identifier",
+          value: token.value
+        };
 
       case "paren":
         if (token.value === "(") {
