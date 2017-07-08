@@ -4,7 +4,7 @@ set -e
 
 pushd ./docs
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 if [BRANCH -e "gh-pages"]; then
     git pull origin gh-pages
