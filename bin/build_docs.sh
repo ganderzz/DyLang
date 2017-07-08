@@ -13,7 +13,7 @@ else
     git remote add origin https://github.com/ganderzz/DyLang.git
     git fetch
     git branch
-    git reset --hard master
+    git reset --hard origin/master
     git checkout -t origin/gh-pages || exit 0;
 
     git config --global user.name "Travis-CI"
