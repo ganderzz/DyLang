@@ -12,6 +12,7 @@ else
     git init
     git remote add origin https://github.com/ganderzz/DyLang.git
     git fetch
+    git branch
     git reset --hard master
     git checkout -t origin/gh-pages || exit 0;
 
