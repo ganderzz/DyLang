@@ -4,7 +4,6 @@ set -e
 
 pushd ./docs
 
-git rev-parse --abbrev-ref HEAD
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 if [BRANCH -e "gh-pages"]; then
@@ -13,7 +12,9 @@ else
     git init
     git remote add origin https://github.com/ganderzz/DyLang.git
     git fetch
+    git stash
     git checkout -t origin/gh-pages || exit 0;
+    git stash apply
 
     git config --global user.name "Travis-CI"
     git config --global user.email "Travis@ci.com"
