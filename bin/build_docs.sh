@@ -2,7 +2,8 @@
 
 set -e
 
-pushd ./docs
+mkdir ../docs
+pushd ../docs
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 
@@ -13,7 +14,6 @@ else
     git remote add origin https://github.com/ganderzz/DyLang.git
     git fetch
     git branch
-    git reset --hard origin/master
     git checkout -t origin/gh-pages || exit 0;
 
     git config --global user.name "Travis-CI"
@@ -25,7 +25,7 @@ fi
 
 popd
 npm run build
-pushd ./docs
+pushd ../docs
 
 git add .
 git commit -m "Updating Docs"
