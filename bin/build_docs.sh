@@ -4,6 +4,7 @@ set -e
 
 pushd ./docs
 
+echo $PATH
 BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 if [BRANCH -e "gh-pages"]; then
