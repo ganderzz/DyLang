@@ -1,20 +1,48 @@
+function logError(values, elem, type, index) {
+  const hint = values
+    .map(e => {
+      if (e.value) {
+        return e.value;
+      }
+
+      return e.token;
+    })
+    .join(" ");
+
+  return new TypeError(
+    `${elem.type} [${elem.token}] is being assigned to a ${type} near [${hint}]. (${index + 1}:0)`
+  );
+}
+
 export default function(tokens) {
   const items = tokens.body;
   const variableTable = {};
 
-  function walk(token) {
+  function walk(token, index) {
     // If no type exists, continue
-    if (!token || !token.valueType || token.valueType === "let") {
+    if (!token || !token.valueType) {
       return;
     }
 
     const type = token.valueType;
     const values = token.value;
 
+    // Add variable to global variable table
+    // If the variable exists, throw error.
+    // Only allow immutable variables
+    if (variableTable[token.name]) {
+        throw new Error(`Immutable variable [${token.name}] reassigned. (${index + 1}:0)`);
+    }
     variableTable[token.name] = type;
+
+    // Let is a dynamic type, so we'll skip type checking
+    if(type === "let") {
+        return;
+    }
 
     for (let i = 0; i < values.length; i++) {
       const elem = values[i];
+
       if (
         elem.type === "Operator" &&
         elem.type === "Variable" &&
@@ -29,43 +57,27 @@ export default function(tokens) {
 
         if (identifierType !== type) {
           throw new TypeError(`
-            Variable [${elem.value}] of type ${type} cannot be assigned to ${identifierType}.`);
+            Variable [${elem.value}] of type ${type} cannot be assigned to ${identifierType}. (${index + 1}:0)`);
         }
         continue;
       }
 
-      const hint = values
-        .map(e => {
-          if (e.value) {
-            return e.value;
-          }
-
-          return e.token;
-        })
-        .join(" ");
-
       switch (elem.type) {
         case "NumberLiteral":
           if (type !== "int") {
-            throw new TypeError(
-              `Integer value is being assigned to a non-int variable near (${hint}).`
-            );
+            throw logError(values, elem, type, index);
           }
           break;
 
         case "DecimalLiteral":
           if (type !== "decimal") {
-            throw new TypeError(
-              `Decimal value is being assigned to a non-decimal variable near (${hint}).`
-            );
+            throw logError(values, elem, type, index);
           }
           break;
 
         case "StringLiteral":
           if (type !== "string") {
-            throw new TypeError(
-              `String value is being assigned to a non-string variable near (${hint}).`
-            );
+            throw logError(values, elem, type, index);
           }
           break;
       }
