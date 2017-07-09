@@ -22,7 +22,13 @@ export default function(tokens) {
         continue;
       }
 
-      const hint = values.map(e => e.token).join(" ");
+      const hint = values.map(e => {
+          if (e.value) {
+              return e.value;
+          }
+          
+          return e.token;
+      }).join(" ");
 
       switch (elem.type) {
         case "NumberLiteral":
@@ -36,7 +42,7 @@ export default function(tokens) {
         case "DecimalLiteral":
           if (type !== "decimal") {
             throw new TypeError(
-              `Decimal value is being assigned to a non-int variable near (${hint}).`
+              `Decimal value is being assigned to a non-decimal variable near (${hint}).`
             );
           }
           break;
@@ -44,7 +50,7 @@ export default function(tokens) {
         case "StringLiteral":
           if (type !== "string") {
             throw new TypeError(
-              `String value is being assigned to a non-int variable near (${hint}).`
+              `String value is being assigned to a non-string variable near (${hint}).`
             );
           }
           break;
