@@ -1,5 +1,6 @@
 export default function(tokens) {
   const items = tokens.body;
+  const variableTable = {};
 
   function walk(token) {
     // If no type exists, continue
@@ -10,25 +11,38 @@ export default function(tokens) {
     const type = token.valueType;
     const values = token.value;
 
+    variableTable[token.name] = type;
+
     for (let i = 0; i < values.length; i++) {
       const elem = values[i];
       if (
-        elem.type === "Identifier" &&
         elem.type === "Operator" &&
         elem.type === "Variable" &&
         elem.type === "CallExpression"
       ) {
-          // We currently won't check types for these expressions
+        // We currently won't check types for these expressions
         continue;
       }
 
-      const hint = values.map(e => {
+      if (elem.type === "Identifier") {
+        const identifierType = variableTable[elem.value];
+
+        if (identifierType !== type) {
+          throw new TypeError(`
+            Variable [${elem.value}] of type ${type} cannot be assigned to ${identifierType}.`);
+        }
+        continue;
+      }
+
+      const hint = values
+        .map(e => {
           if (e.value) {
-              return e.value;
+            return e.value;
           }
-          
+
           return e.token;
-      }).join(" ");
+        })
+        .join(" ");
 
       switch (elem.type) {
         case "NumberLiteral":

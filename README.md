@@ -16,14 +16,15 @@ Simple programming language that compiles to JavaScript. This is an ever growing
     Comment
 #
 
-# Print the result
+# Variables!
 int a = 2 + 3
-decimal b = 10.5 / a
+int b = 10 / a
 string foo = 'bar'
 
 # 'let' is a dynamic type!
 let result = (Math.pow b a)
 
+# Print the result
 (console.log result)
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
