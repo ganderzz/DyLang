@@ -39,6 +39,7 @@ export default function parser(tokens) {
         let node = {
           type: "Variable",
           name: token.value,
+          valueType: token.valueType,
           value: []
         };
         token = tokens[++current];

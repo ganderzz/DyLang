@@ -86,15 +86,21 @@ export default function tokenize(input) {
         continue;
       }
 
-      if (currentElement === "l") {
+      const currentRow = rows[i].slice(current);
+      if (lookAhead("int", currentRow) || 
+          lookAhead("decimal", currentRow) ||
+          lookAhead("string", currentRow) ||
+          lookAhead("let", currentRow) ) {
+        let variableType = "";
         let variableName = "";
 
-        if (rows[i][current + 1] !== "e" && rows[i][current + 2] !== "t") {
-          continue;
+        while(current < colLength && rows[i][current] !== " ") {
+          variableType += rows[i][current];
+          current++;
         }
 
         // Skip 4 to ignore spacing
-        current += 4;
+        current++;
         while (current < colLength && /[a-z]/i.test(rows[i][current])) {
           variableName += rows[i][current];
           current++;
@@ -108,6 +114,7 @@ export default function tokenize(input) {
 
         tokens.push({
           type: Token.VARIABLE,
+          valueType: variableType,
           value: variableName
         });
 
