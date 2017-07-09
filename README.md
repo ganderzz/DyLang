@@ -17,11 +17,14 @@ Simple programming language that compiles to JavaScript. This is an ever growing
 #
 
 # Print the result
-let a = 2 + 3
-let b = 10 / a
-let result = (Math.pow a b) # Math.pow(5, 2)
+int a = 2 + 3
+decimal b = 10.5 / a
+string foo = 'bar'
 
-(console.log result) # 25
+# 'let' is a dynamic type!
+let result = (Math.pow b a)
+
+(console.log result)
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
 
