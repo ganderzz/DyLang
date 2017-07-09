@@ -12,11 +12,17 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/continuecomment.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/edit/matchbrackets.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/comment.js"></script>
+    
+        <style>
+            .columns {
+                padding: 0;
+            }
+        </style>
     </head>
     <body>
-        <div class="row" style="margin-top: 20px;">
-            <div class="small-6 columns">
-                <textarea id="code" style="height: 70vh;">
+        <div class="row" style="margin-top: 20px; min-height: 300px;">
+            <div class="small-6 medium-7 columns">
+                <textarea id="code">
 ##
     Multi
     Line
@@ -33,9 +39,11 @@ let result = (Math.pow b a)
 
 # Print the result
 (console.log result)</textarea>
+
+                <button type="button" class="button expanded">Compile</button>
             </div>
 
-            <div class="small-6 columns">
+            <div class="small-6 medium-5 columns">
                 <div class="callout alert hide" id="error__result"></div>
 
                 <span class="label secondary">Result</span>
@@ -44,26 +52,21 @@ let result = (Math.pow b a)
             </div>
         </div>
 
-        <div class="row">
-            <div class="small-6 columns">
-                <button type="button" class="button expanded">Compile</button>
-            </div>
-        </div>
-
         <hr />
 
         <div class="row">
             <div class="small-12">
-                <i class="fa fa-github" aria-hidden="true"></i> Check out the <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
+                <i class="fa fa-github" aria-hidden="true"></i> Check out <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
             </div>
         </div>
 
         <script>
             window.onload = function() {
+                var codeEditor = document.getElementById("code");
                 var resultField = document.querySelector("#code__result");
                 var errorField = document.querySelector("#error__result");
 
-                var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                var editor = CodeMirror.fromTextArea(codeEditor, {
                     lineNumbers: true
                 });
 
