@@ -1,5 +1,15 @@
-function lookAhead(row, tokenString) {
-  return row.indexOf(tokenString);
+import Token from "./Enums/Token";
+
+function lookAhead(needle, row) {
+  const elem = row.split("");
+
+  for (let i = 0; row[i] !== " " && i < row.length; i++) {
+    if (needle[i] !== row[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 export default function tokenize(input) {
@@ -8,8 +18,7 @@ export default function tokenize(input) {
   const rows = input.split("\n");
   let isComment = false;
 
-  const rowsLength = rows.length;
-  for (let i = 0; i < rowsLength; i++) {
+  for (let i = 0, rowsLength = rows.length; i < rowsLength; i++) {
     const colLength = rows[i].length;
     let current = 0;
     let parenCount = 0;
@@ -44,14 +53,33 @@ export default function tokenize(input) {
       if (/[0-9]/.test(currentElement)) {
         let value = rows[i][current];
 
-        current++
+        current++;
         while (/[0-9]/.test(rows[i][current])) {
           value += rows[i][current];
           current++;
         }
 
+        // Check if decimal number
+        if (rows[i][current] === ".") {
+          value += ".";
+          current++;
+
+          while (/[0-9]/.test(rows[i][current])) {
+            value += rows[i][current];
+            current++;
+          }
+
+          tokens.push({
+            type: Token.DECIMAL,
+            value: parseFloat(value)
+          });
+
+          continue;
+        }
+
+        // If not decimal, add it as an int
         tokens.push({
-          type: "number",
+          type: Token.NUMBER,
           value: parseInt(value, 10)
         });
 
@@ -61,7 +89,7 @@ export default function tokenize(input) {
       if (currentElement === "l") {
         let variableName = "";
 
-        if(rows[i][current+1] !== "e" && rows[i][current+2] !== "t") {
+        if (rows[i][current + 1] !== "e" && rows[i][current + 2] !== "t") {
           continue;
         }
 
@@ -79,7 +107,7 @@ export default function tokenize(input) {
         }
 
         tokens.push({
-          type: "variable",
+          type: Token.VARIABLE,
           value: variableName
         });
 
@@ -87,16 +115,19 @@ export default function tokenize(input) {
       }
 
       if (currentElement === "=") {
-        if (tokens[tokens.length - 1].type !== "variable") {
+        if (tokens[tokens.length - 1].type !== Token.VARIABLE) {
           throw new Error(
-            "Cannot assign value to non variable on line " + (i + 1) + ":" + current
+            "Cannot assign value to non variable on line " +
+              (i + 1) +
+              ":" +
+              current
           );
         }
 
         current++;
 
         tokens.push({
-          type: "assignment"
+          type: Token.ASSIGNMENT
         });
 
         continue;
@@ -117,7 +148,7 @@ export default function tokenize(input) {
         current++;
 
         tokens.push({
-          type: "string",
+          type: Token.STRING,
           value: value
         });
         continue;
@@ -128,7 +159,7 @@ export default function tokenize(input) {
         parenCount++;
 
         tokens.push({
-          type: "paren",
+          type: Token.PAREN,
           value: currentElement
         });
 
@@ -144,7 +175,7 @@ export default function tokenize(input) {
         parenCount--;
 
         tokens.push({
-          type: "paren",
+          type: Token.PAREN,
           value: currentElement
         });
 
@@ -162,19 +193,19 @@ export default function tokenize(input) {
         }
 
         tokens.push({
-          type: "identifier",
+          type: Token.IDENTIFIER,
           value: value
         });
 
         continue;
       }
-      
+
       const signs = /[\+\-\*\/\%]/i;
       if (currentElement.match(signs)) {
         current++;
 
         tokens.push({
-          type: "operator",
+          type: Token.OPERATOR,
           value: currentElement
         });
 
@@ -190,9 +221,9 @@ export default function tokenize(input) {
           current
       );
     }
-    
+
     tokens.push({
-      type: "end"
+      type: Token.END
     });
   }
 

@@ -1,3 +1,5 @@
+import Token from "./Enums/Token";
+
 export default function parser(tokens) {
   let current = 0;
 
@@ -5,28 +7,35 @@ export default function parser(tokens) {
     let token = tokens[current];
 
     switch (token.type) {
-      case "number":
+      case Token.NUMBER:
         current++;
         return {
           type: "NumberLiteral",
           token: token.value
         };
 
-      case "string":
+      case Token.DECIMAL:
+        current++;
+        return {
+          type: "DecimalLiteral",
+          token: token.value
+        };
+
+      case Token.STRING:
         current++;
         return {
           type: "StringLiteral",
           token: token.value
         };
 
-      case "operator":
+      case Token.OPERATOR:
         current++;
         return {
           type: "Operator",
           token: token.value
         };
 
-      case "variable":
+      case Token.VARIABLE:
         let node = {
           type: "Variable",
           name: token.value,
@@ -34,27 +43,26 @@ export default function parser(tokens) {
         };
         token = tokens[++current];
 
-        if (token.type === "assignment") {
+        if (token.type === Token.ASSIGNMENT) {
           token = tokens[++current];
 
-          while(token.type !== "end") {
+          while (token.type !== Token.END) {
             node.value.push(walk());
             token = tokens[current];
-             
           }
           current++;
         }
 
         return node;
 
-      case "identifier":
+      case Token.IDENTIFIER:
         current++;
         return {
           type: "Identifier",
           value: token.value
         };
 
-      case "paren":
+      case Token.PAREN:
         if (token.value === "(") {
           token = tokens[++current];
 
@@ -66,9 +74,9 @@ export default function parser(tokens) {
           token = tokens[++current];
 
           while (
-            token.type !== "paren" ||
-            (token.type === "paren" && token.value !== ")") ||
-            token.type === "end"
+            token.type !== Token.PAREN ||
+            (token.type === Token.PAREN && token.value !== ")") ||
+            token.type === Token.END
           ) {
             node.params.push(walk());
             token = tokens[current];
@@ -79,9 +87,9 @@ export default function parser(tokens) {
           return node;
         }
 
-        case "end":
-          current++;
-          return;
+      case Token.END:
+        current++;
+        return;
     }
 
     throw new TypeError("Invalid Type: " + token.type);

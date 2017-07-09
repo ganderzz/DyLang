@@ -28,6 +28,7 @@ export default function traverser(ast, visitor) {
         traverseArray(node.value, node);
         break;
 
+      case "DecimalLiteral":
       case "StringLiteral":
       case "NumberLiteral":
       case "Operator":

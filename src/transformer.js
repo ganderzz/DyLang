@@ -18,6 +18,15 @@ export default function transformer(ast) {
       }
     },
 
+    DecimalLiteral: {
+      enter(node, parent) {
+        parent._context.push({
+          type: "DecimalLiteral",
+          value: node.token
+        });
+      }
+    },
+
     StringLiteral: {
       enter(node, parent) {
         parent._context.push({
@@ -98,7 +107,7 @@ export default function transformer(ast) {
 
         parent._context.push(expression);
       }
-    },
+    }
   });
 
   return newAst;

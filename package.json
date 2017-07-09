@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf build; mkdir build && ./node_modules/.bin/rollup -c",
-    "build:watch": "./node_modules/.bin/rollup -c --watch",
-    "test": "echo \"Error: no test specified\" && true"
+    "build:watch": "./node_modules/.bin/rollup -c --watch"
   },
   "repository": {
     "type": "git",
