@@ -17,10 +17,14 @@
             .columns {
                 padding: 0;
             }
+            .CodeMirror {
+                border: 1px solid #eee;
+                height: 50vh;
+            }
         </style>
     </head>
     <body>
-        <div class="row" style="margin-top: 20px; min-height: 300px;">
+        <div class="row" style="margin-top: 20px; min-height: 600px;">
             <div class="small-6 medium-7 columns">
                 <textarea id="code">
 ##
@@ -53,7 +57,7 @@ if result < a {
 
                 <span class="label secondary">Result</span>
 
-                <div id="code__result" style="overflow-y: auto; max-height: 400px;"></div>
+                <div id="code__result" style="overflow-y: auto; max-height: 50vh;"></div>
             </div>
         </div>
 
