@@ -63,6 +63,24 @@ export default function parser(tokens) {
           value: token.value
         };
 
+      case Token.IF:
+        let inode = {
+          type: "IfStatement",
+          conditional: token.conditional,
+          body: [],
+        }
+        current += 2;
+        token = tokens[current];
+
+        while(token.type !== Token.END_BRACE) {
+          inode.body.push(walk());
+          token = tokens[current]
+        }
+        current += 2;
+        token = tokens[current];
+
+        return inode;
+
       case Token.PAREN:
         if (token.value === "(") {
           token = tokens[++current];

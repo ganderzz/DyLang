@@ -6,7 +6,7 @@ export default function traverser(ast, visitor) {
   }
 
   function traverseNode(node, parent) {
-    if (!node) {
+    if (!node || !node.type) {
       return;
     }
     let methods = visitor[node.type];
@@ -27,12 +27,17 @@ export default function traverser(ast, visitor) {
       case "Variable":
         traverseArray(node.value, node);
         break;
+      
+      case "IfStatement":
+        traverseArray(node.body, node);
+        break;
 
       case "DecimalLiteral":
       case "StringLiteral":
       case "NumberLiteral":
       case "Operator":
       case "Identifier":
+      case "None":
         break;
 
       default:

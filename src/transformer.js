@@ -85,6 +85,20 @@ export default function transformer(ast) {
       }
     },
 
+    IfStatement: {
+      enter(node, parent) {
+        let expression = {
+          type: "IfStatement",
+          conditional: node.conditional,
+          body: []
+        };
+
+        node._context = expression.body;
+
+        parent._context.push(expression);
+      }
+    },
+
     CallExpression: {
       enter(node, parent) {
         let expression = {

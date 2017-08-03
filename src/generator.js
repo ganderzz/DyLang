@@ -1,4 +1,8 @@
 export default function generator(node) {
+  if(!node) {
+    return;
+  }
+
   switch (node.type) {
     case "Program":
       return `(function() { ${node.body.map(generator).join("")} })();`;
@@ -19,6 +23,10 @@ export default function generator(node) {
           .join(" ")};`;
       }
       return generator(node.name);
+
+    case "IfStatement":
+      return `if(${node.conditional}) {${node.body.map(generator)
+          .join(" ")}}`;
 
     case "Identifier":
     case "Operator":

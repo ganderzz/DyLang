@@ -18,14 +18,19 @@ Simple programming language that compiles to JavaScript. This is an ever growing
 
 # Variables!
 int a = 2 + 3
-int b = 10 / a
+decimal b = 2.5
 string foo = 'bar'
 
 # 'let' is a dynamic type!
 let result = (Math.pow b a)
 
-# Print the result
-(console.log result)
+if result > a {
+    (console.log "It's Bigger!")
+}
+
+if result < a {
+    (console.log "Sad")
+}
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
 

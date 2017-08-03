@@ -7,5 +7,9 @@ export default Object.freeze({
   ASSIGNMENT: 5,
   VARIABLE: 6,
   NUMBER: 7,
-  DECIMAL: 8
+  DECIMAL: 8,
+  IF: 9,
+  START_BRACE: 10,
+  END_BRACE: 11,
+  NONE: 12,
 });
