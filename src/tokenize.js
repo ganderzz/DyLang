@@ -87,16 +87,6 @@ export default function tokenize(input) {
         continue;
       }
 
-      if (currentElement === "}") {
-        current++;
-
-        tokens.push({
-          type: Token.END_BRACE,
-        });
-
-        continue;
-      }
-
       if (currentElement === "{") {
         current++;
 
@@ -107,19 +97,21 @@ export default function tokenize(input) {
         continue;
       }
 
-      if (lookAhead("if", currentRow)) {
-        let conditional = "";
-
-        current += 3;
-        while (current < colLength && rows[i][current] !== "{") {
-          conditional += rows[i][current];
-          current++;
-        }
+      if (currentElement === "}") {
         current++;
 
         tokens.push({
-          type: Token.IF,
-          conditional: conditional.trim()
+          type: Token.END_BRACE,
+        });
+
+        continue;
+      }
+
+      if (lookAhead("if", currentRow)) {
+        current += 2;
+
+        tokens.push({
+          type: Token.IF
         });
 
         continue;
@@ -245,7 +237,7 @@ export default function tokenize(input) {
         continue;
       }
 
-      const signs = /[\+\-\*\/\%]/i;
+      const signs = /[\+\-\*\/\%\<\>]/i;
       if (currentElement.match(signs)) {
         current++;
 

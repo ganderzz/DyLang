@@ -40,7 +40,7 @@ export default function transformer(ast) {
       enter(node, parent) {
         parent._context.push({
           type: "Operator",
-          value: node.token
+          token: node.token
         });
       }
     },

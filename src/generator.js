@@ -25,14 +25,17 @@ export default function generator(node) {
       return generator(node.name);
 
     case "IfStatement":
-      return `if(${node.conditional}) {${node.body.map(generator)
+      return `if(${node.conditional.map(generator)
+          .join(" ")}){${node.body.map(generator)
           .join(" ")}}`;
 
     case "Identifier":
-    case "Operator":
     case "DecimalLiteral":
     case "NumberLiteral":
       return node.value;
+      
+    case "Operator":
+      return node.token;
 
     case "StringLiteral":
       return '"' + node.value + '"';

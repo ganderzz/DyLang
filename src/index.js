@@ -12,6 +12,7 @@ export default code => {
 
   const tr = transformer(p);
   const g = generator(tr);
+  console.warn(g)
 
   return g;
 };
