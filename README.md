@@ -19,17 +19,17 @@ Simple programming language that compiles to JavaScript. This is an ever growing
 # Variables!
 int a = 2 + 3
 decimal b = 2.5
-string foo = 'bar'
+string foo = 'bar!'
 
 # 'let' is a dynamic type!
 let result = (Math.pow b a)
 
 if result > a {
-    (console.log "It's Bigger!")
+    (console.log foo)
 }
 
 if result < a {
-    (console.log "Sad")
+    (console.log 'Nope!')
 }
 ```
 [View the result](http://dylanpaulus.com/DyLang/)
@@ -39,4 +39,4 @@ if result < a {
 
 Feel free to open an [Issue](https://github.com/ganderzz/DyLang/issues/new) to provide any feedback!
 
-To contribute, follow [Kent Dodds' guide](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)!
+To contribute, follow [Kent C. Dodds' guide](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)!
