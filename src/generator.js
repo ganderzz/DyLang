@@ -5,7 +5,7 @@ export default function generator(node) {
 
   switch (node.type) {
     case "Program":
-      return `(function() { ${node.body.map(generator).join("")} })();`;
+      return `(function(){${node.body.map(generator).join("")}})();`;
 
     case "Assignment":
     case "ExpressionStatement":
@@ -18,7 +18,7 @@ export default function generator(node) {
 
     case "Variable":
       if (node.value.length > 0) {
-        return `var ${generator(node.name)} = ${node.value
+        return `var ${generator(node.name)}=${node.value
           .map(generator)
           .join(" ")};`;
       }
@@ -32,6 +32,7 @@ export default function generator(node) {
     case "Identifier":
     case "DecimalLiteral":
     case "NumberLiteral":
+    case "BooleanLiteral":
       return node.value;
       
     case "Operator":
