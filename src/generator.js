@@ -29,6 +29,10 @@ export default function generator(node) {
           .join(" ")}){${node.body.map(generator)
           .join(" ")}}`;
 
+    case "ElseStatement":
+      return `else{${node.body.map(generator)
+          .join(" ")}}`;
+
     case "Identifier":
     case "DecimalLiteral":
     case "NumberLiteral":

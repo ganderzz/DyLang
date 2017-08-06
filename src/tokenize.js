@@ -116,6 +116,16 @@ export default function tokenize(input) {
 
         continue;
       }
+
+      if (lookAhead("else", currentRow)) {
+        current += 4;
+
+        tokens.push({
+          type: Token.ELSE
+        });
+
+        continue;
+      }
       
       if (lookAhead("int", currentRow) || 
           lookAhead("decimal", currentRow) ||

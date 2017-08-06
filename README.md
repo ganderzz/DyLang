@@ -26,9 +26,7 @@ let result = (Math.pow b a)
 
 if result > a {
     (console.log foo)
-}
-
-if result < a {
+} else {
     (console.log 'Nope!')
 }
 ```

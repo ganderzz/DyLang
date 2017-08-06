@@ -75,16 +75,35 @@ export default function parser(tokens) {
           inode.conditional.push(walk());
           token = tokens[current];
         }
-        current++;
+        token = tokens[++current];
 
         while(token.type !== Token.END_BRACE) {
           inode.body.push(walk());
           token = tokens[current]
         }
-        current += 2;
-        token = tokens[current];
+        token = tokens[++current];
 
         return inode;
+
+      case Token.ELSE:
+        let enode = {
+          type: "ElseStatement",
+          body: [],
+        }
+        token = tokens[++current];
+
+        while(token.type !== Token.START_BRACE) {
+          token = tokens[++current];
+        }
+        current++;
+
+        while(token.type !== Token.END_BRACE) {
+          enode.body.push(walk());
+          token = tokens[current]
+        }
+        token = tokens[++current];
+
+        return enode;
 
       case Token.PAREN:
         if (token.value === "(") {

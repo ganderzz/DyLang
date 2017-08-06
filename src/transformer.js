@@ -99,6 +99,19 @@ export default function transformer(ast) {
       }
     },
 
+    ElseStatement: {
+      enter(node, parent) {
+        let expression = {
+          type: "ElseStatement",
+          body: []
+        };
+
+        node._context = expression.body;
+
+        parent._context.push(expression);
+      }
+    },
+
     CallExpression: {
       enter(node, parent) {
         let expression = {

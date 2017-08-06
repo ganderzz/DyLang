@@ -28,6 +28,7 @@ export default function traverser(ast, visitor) {
         traverseArray(node.value, node);
         break;
       
+      case "ElseStatement":
       case "IfStatement":
         traverseArray(node.body, node);
         break;

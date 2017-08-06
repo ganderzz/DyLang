@@ -12,4 +12,5 @@ export default Object.freeze({
   START_BRACE: 10,
   END_BRACE: 11,
   NONE: 12,
+  ELSE: 13,
 });
