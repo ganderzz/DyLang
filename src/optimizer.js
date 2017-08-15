@@ -33,7 +33,6 @@ const hasDefinedVariable = (values, variableHash) => {
 };
 
 const walker = (ast, variableHash) => {
-    console.warn(ast, variableHash)
     if (ast.type === "Assignment") {
         const expression = ast.expression;
         const values = expression.value;

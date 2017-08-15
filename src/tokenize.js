@@ -162,6 +162,16 @@ export default function tokenize(input) {
       }
 
       if (currentElement === "=") {
+        if (rows[i][current + 1] === "=") {
+          current += 2;
+
+          tokens.push({
+            type: Token.OPERATOR,
+            value: "=="
+          });
+          continue;
+        }
+
         if (tokens[tokens.length - 1].type !== Token.VARIABLE) {
           throw new Error(
             "Cannot assign value to non variable on line " +
@@ -247,9 +257,22 @@ export default function tokenize(input) {
         continue;
       }
 
-      const signs = /[\+\-\*\/\%\<\>]/i;
+      const signs = /[\+\-\*\/\%\<\>\!]/i;
       if (currentElement.match(signs)) {
         current++;
+
+        console.warn(currentElement, rows[i][current + 1]);
+
+        if (currentElement === "!" && rows[i][current] === "=") {
+          current++;
+
+          tokens.push({
+            type: Token.OPERATOR,
+            value: "!="
+          });
+
+          continue;
+        }
 
         tokens.push({
           type: Token.OPERATOR,
@@ -269,9 +292,11 @@ export default function tokenize(input) {
       );
     }
 
-    tokens.push({
-      type: Token.END
-    });
+    if (tokens.length > 0) {
+      tokens.push({
+        type: Token.END
+      });
+    }
   }
 
   if (isComment) {

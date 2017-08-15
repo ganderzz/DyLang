@@ -7,5 +7,12 @@
       }
     ]
   ],
-  "plugins": ["external-helpers"]
+  "env": {
+    "test": {
+      "presets": ["es2015-node4"]
+    }
+  },
+  "plugins": [
+    "external-helpers"
+  ]
 }
