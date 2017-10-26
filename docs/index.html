@@ -19,12 +19,12 @@
             }
             .CodeMirror {
                 border: 1px solid #eee;
-                height: 50vh;
+                height: 80%;
             }
         </style>
     </head>
-    <body>
-        <div class="row" style="margin-top: 20px; min-height: 600px;">
+    <body style="height: 100%">
+        <div class="row" style="margin-top: 20px; height: 100vh; min-height: 600px;">
             <div class="small-6 medium-7 columns">
                 <textarea id="code">
 ##
@@ -50,12 +50,22 @@ if result > a {
                 <button type="button" class="button expanded">Compile</button>
             </div>
 
-            <div class="small-6 medium-5 columns">
+            <div class="small-6 medium-5 columns" style="padding: 5px;">
                 <div class="callout alert hide" id="error__result"></div>
 
                 <span class="label secondary">Result</span>
 
                 <div id="code__result" style="overflow-y: auto; max-height: 50vh;"></div>
+
+                <hr style="margin: 15px; background: #F1F1F1;" />
+
+                <span class="label secondary">Generated</span>
+
+                <div
+                    id="generated__result"
+                    style="overflow-y: auto; max-height: 50vh;font-size: 12px"
+                >
+                </div>
             </div>
         </div>
 
@@ -72,6 +82,7 @@ if result > a {
                 var codeEditor = document.getElementById("code");
                 var resultField = document.querySelector("#code__result");
                 var errorField = document.querySelector("#error__result");
+                var generatedField = document.querySelector("#generated__result");
 
                 var editor = CodeMirror.fromTextArea(codeEditor, {
                     lineNumbers: true
@@ -90,6 +101,7 @@ if result > a {
                     try {
                         var compiled = dylang(editor.getValue());
 
+                        generatedField.innerHTML = compiled;
                         eval(compiled);
                     } catch(exception) {
                         errorField.classList.remove("hide");

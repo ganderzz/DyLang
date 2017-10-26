@@ -33,6 +33,7 @@ export default function traverser(ast, visitor) {
         traverseArray(node.body, node);
         break;
 
+      case "Separator":
       case "DecimalLiteral":
       case "StringLiteral":
       case "NumberLiteral":

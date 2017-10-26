@@ -261,8 +261,6 @@ export default function tokenize(input) {
       if (currentElement.match(signs)) {
         current++;
 
-        console.warn(currentElement, rows[i][current + 1]);
-
         if (currentElement === "!" && rows[i][current] === "=") {
           current++;
 
@@ -277,6 +275,16 @@ export default function tokenize(input) {
         tokens.push({
           type: Token.OPERATOR,
           value: currentElement
+        });
+
+        continue;
+      }
+
+      if (currentElement.match(",")) {
+        current++;
+
+        tokens.push({
+          type: Token.SEPARATOR
         });
 
         continue;

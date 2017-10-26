@@ -11,28 +11,28 @@ export default function parser(tokens) {
         current++;
         return {
           type: "NumberLiteral",
-          token: token.value
+          value: token.value
         };
 
       case Token.DECIMAL:
         current++;
         return {
           type: "DecimalLiteral",
-          token: token.value
+          value: token.value
         };
 
       case Token.STRING:
         current++;
         return {
           type: "StringLiteral",
-          token: token.value
+          value: token.value
         };
 
       case Token.OPERATOR:
         current++;
         return {
           type: "Operator",
-          token: token.value
+          value: token.value
         };
 
       case Token.VARIABLE:
@@ -61,6 +61,12 @@ export default function parser(tokens) {
         return {
           type: "Identifier",
           value: token.value
+        };
+
+      case Token.SEPARATOR:
+        current++;
+        return {
+          type: "Separator"
         };
 
       case Token.IF:

@@ -13,7 +13,7 @@ export default function generator(node) {
 
     case "CallExpression":
       return (
-        generator(node.callee) + "(" + node.arguments.map(generator) + ");"
+        generator(node.callee) + "(" + node.arguments.map(generator) + ")"
       );
 
     case "Variable":
@@ -40,7 +40,7 @@ export default function generator(node) {
       return node.value;
       
     case "Operator":
-      return node.token;
+      return node.value;
 
     case "StringLiteral":
       return '"' + node.value + '"';
