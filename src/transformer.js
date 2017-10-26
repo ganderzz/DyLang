@@ -13,7 +13,7 @@ export default function transformer(ast) {
       enter(node, parent) {
         parent._context.push({
           type: "NumberLiteral",
-          value: node.token
+          value: node.value
         });
       }
     },
@@ -22,7 +22,7 @@ export default function transformer(ast) {
       enter(node, parent) {
         parent._context.push({
           type: "DecimalLiteral",
-          value: node.token
+          value: node.value
         });
       }
     },
@@ -31,7 +31,7 @@ export default function transformer(ast) {
       enter(node, parent) {
         parent._context.push({
           type: "StringLiteral",
-          value: node.token
+          value: node.value
         });
       }
     },
@@ -40,7 +40,7 @@ export default function transformer(ast) {
       enter(node, parent) {
         parent._context.push({
           type: "Operator",
-          token: node.token
+          value: node.value
         });
       }
     },
@@ -50,6 +50,14 @@ export default function transformer(ast) {
         parent._context.push({
           type: "Identifier",
           value: node.value
+        });
+      }
+    },
+
+    Separator: {
+      enter(node, parent) {
+        parent._context.push({
+          type: "Separator"
         });
       }
     },
