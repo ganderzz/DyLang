@@ -261,12 +261,13 @@ export default function tokenize(input) {
       if (currentElement.match(signs)) {
         current++;
 
-        if (currentElement === "!" && rows[i][current] === "=") {
+        const operator = currentElement.match(/[\!\<\>]/);
+        if (operator && rows[i][current] === "=") {
           current++;
-
+          
           tokens.push({
             type: Token.OPERATOR,
-            value: "!="
+            value: `${operator[0]}=`
           });
 
           continue;
