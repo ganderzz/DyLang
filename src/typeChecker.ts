@@ -10,7 +10,9 @@ function logError(values, elem, type, index) {
     .join(" ");
 
   return new TypeError(
-    `${elem.type} [${elem.token}] is being assigned to a ${type} near [${hint}]. (${index + 1}:0)`
+    `${elem.type} [${
+      elem.token
+    }] is being assigned to a ${type} near [${hint}]. (${index + 1}:0)`
   );
 }
 
@@ -31,13 +33,15 @@ export default function(tokens) {
     // If the variable exists, throw error.
     // Only allow immutable variables
     if (variableTable[token.name]) {
-        throw new Error(`Immutable variable [${token.name}] reassigned. (${index + 1}:0)`);
+      throw new Error(
+        `Immutable variable [${token.name}] reassigned. (${index + 1}:0)`
+      );
     }
     variableTable[token.name] = type;
 
     // Let is a dynamic type, so we'll skip type checking
-    if(type === "let") {
-        return;
+    if (type === "let") {
+      return;
     }
 
     for (let i = 0; i < values.length; i++) {
@@ -57,7 +61,10 @@ export default function(tokens) {
 
         if (identifierType !== type) {
           throw new TypeError(`
-            Variable [${elem.value}] of type ${type} cannot be assigned to ${identifierType}. (${index + 1}:0)`);
+            Variable [${
+              elem.value
+            }] of type ${type} cannot be assigned to ${identifierType}. (${index +
+            1}:0)`);
         }
         continue;
       }

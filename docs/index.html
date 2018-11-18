@@ -121,10 +121,10 @@ if result > a {
           var start = performance.now();
 
           try {
-            var compiled = dylang(editor.getValue());
+            var compiled = dylang(editor.getValue(), { output: "js" });
 
             generatedField.innerHTML = compiled;
-            eval(compiled);
+            //eval(compiled);
           } catch (exception) {
             errorField.classList.remove("hide");
             errorField.innerHTML = exception;

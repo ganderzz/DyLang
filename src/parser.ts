@@ -1,4 +1,4 @@
-import Token from "./Enums/Token";
+import { TokenType } from "./Enums/Token";
 
 export default function parser(tokens) {
   let current = 0;
@@ -7,35 +7,35 @@ export default function parser(tokens) {
     let token = tokens[current];
 
     switch (token.type) {
-      case Token.NUMBER:
+      case TokenType.NUMBER:
         current++;
         return {
           type: "NumberLiteral",
           value: token.value
         };
 
-      case Token.DECIMAL:
+      case TokenType.DECIMAL:
         current++;
         return {
           type: "DecimalLiteral",
           value: token.value
         };
 
-      case Token.STRING:
+      case TokenType.STRING:
         current++;
         return {
           type: "StringLiteral",
           value: token.value
         };
 
-      case Token.OPERATOR:
+      case TokenType.OPERATOR:
         current++;
         return {
           type: "Operator",
           value: token.value
         };
 
-      case Token.VARIABLE:
+      case TokenType.VARIABLE:
         let node = {
           type: "Variable",
           name: token.value,
@@ -44,10 +44,10 @@ export default function parser(tokens) {
         };
         token = tokens[++current];
 
-        if (token.type === Token.ASSIGNMENT) {
+        if (token.type === TokenType.ASSIGNMENT) {
           token = tokens[++current];
 
-          while (token.type !== Token.END) {
+          while (token.type !== TokenType.END) {
             node.value.push(walk());
             token = tokens[current];
           }
@@ -56,62 +56,62 @@ export default function parser(tokens) {
 
         return node;
 
-      case Token.IDENTIFIER:
+      case TokenType.IDENTIFIER:
         current++;
         return {
           type: "Identifier",
           value: token.value
         };
 
-      case Token.SEPARATOR:
+      case TokenType.SEPARATOR:
         current++;
         return {
           type: "Separator"
         };
 
-      case Token.IF:
+      case TokenType.IF:
         let inode = {
           type: "IfStatement",
           conditional: [],
-          body: [],
-        }
+          body: []
+        };
         token = tokens[++current];
 
-        while(token.type !== Token.START_BRACE) {
+        while (token.type !== TokenType.START_BRACE) {
           inode.conditional.push(walk());
           token = tokens[current];
         }
         token = tokens[++current];
 
-        while(token.type !== Token.END_BRACE) {
+        while (token.type !== TokenType.END_BRACE) {
           inode.body.push(walk());
-          token = tokens[current]
+          token = tokens[current];
         }
         token = tokens[++current];
 
         return inode;
 
-      case Token.ELSE:
+      case TokenType.ELSE:
         let enode = {
           type: "ElseStatement",
-          body: [],
-        }
+          body: []
+        };
         token = tokens[++current];
 
-        while(token.type !== Token.START_BRACE) {
+        while (token.type !== TokenType.START_BRACE) {
           token = tokens[++current];
         }
         current++;
 
-        while(token.type !== Token.END_BRACE) {
+        while (token.type !== TokenType.END_BRACE) {
           enode.body.push(walk());
-          token = tokens[current]
+          token = tokens[current];
         }
         token = tokens[++current];
 
         return enode;
 
-      case Token.PAREN:
+      case TokenType.PAREN:
         if (token.value === "(") {
           token = tokens[++current];
 
@@ -123,9 +123,9 @@ export default function parser(tokens) {
           token = tokens[++current];
 
           while (
-            token.type !== Token.PAREN ||
-            (token.type === Token.PAREN && token.value !== ")") ||
-            token.type === Token.END
+            token.type !== TokenType.PAREN ||
+            (token.type === TokenType.PAREN && token.value !== ")") ||
+            token.type === TokenType.END
           ) {
             node.params.push(walk());
             token = tokens[current];
@@ -136,7 +136,7 @@ export default function parser(tokens) {
           return node;
         }
 
-      case Token.END:
+      case TokenType.END:
         current++;
         return;
     }

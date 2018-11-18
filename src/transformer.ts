@@ -78,15 +78,15 @@ export default function transformer(ast) {
         if (node.value !== "CallExpression") {
           expression = {
             type: "Assignment",
-            expression: expression
-          };
+            expression
+          } as any;
         }
 
         if (!node.value) {
           expression = {
             type: "Variable",
             name: node.name
-          };
+          } as any;
         }
 
         parent._context.push(expression);
@@ -128,8 +128,9 @@ export default function transformer(ast) {
             type: "Identifier",
             value: node.name
           },
-          arguments: []
-        };
+          arguments: [],
+          expression: null
+        } as any;
 
         node._context = expression.arguments;
 
