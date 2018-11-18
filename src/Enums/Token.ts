@@ -1,0 +1,17 @@
+export enum TokenType {
+  PAREN,
+  IDENTIFIER,
+  OPERATOR,
+  END,
+  STRING,
+  ASSIGNMENT,
+  VARIABLE,
+  NUMBER,
+  DECIMAL,
+  IF,
+  START_BRACE,
+  END_BRACE,
+  NONE,
+  ELSE,
+  SEPARATOR
+}

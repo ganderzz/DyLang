@@ -1,8 +1,8 @@
-import Token from "./Enums/Token";
+import { TokenType } from "../Enums/Token";
+import { handleSqwiggleStartBrace } from "./Functions/sqwiggleStartBrace";
+import { IToken } from "../Interfaces/IToken";
 
 function lookAhead(needle, row) {
-  const elem = row.split("");
-
   for (let i = 0; row[i] !== " " && i < row.length; i++) {
     if (needle[i] !== row[i]) {
       return false;
@@ -12,8 +12,8 @@ function lookAhead(needle, row) {
   return true;
 }
 
-export default function tokenize(input) {
-  const tokens = [];
+export function tokenize(input: string) {
+  let tokens: IToken<any>[] = [];
 
   const rows = input.split("\n");
   let isComment = false;
@@ -27,23 +27,27 @@ export default function tokenize(input) {
       const currentElement = rows[i][current];
       const currentRow = rows[i].slice(current);
 
-      if (isComment && currentElement !== "#") {
+      if (isComment && currentElement !== "*") {
         current++;
         continue;
-      } else if (isComment && currentElement === "#") {
+      } else if (
+        isComment &&
+        currentElement === "*" &&
+        rows[i][current + 1] === "/"
+      ) {
         isComment = false;
-        current++;
+        current += 2;
         continue;
       }
 
-      if (currentElement === "#") {
-        if (rows[i][++current] === "#") {
-          current++;
-          isComment = true;
-          continue;
-        }
-
+      if (currentElement === "/" && rows[i][current + 1] === "/") {
         break;
+      }
+
+      if (currentElement === "/" && rows[i][current + 1] === "*") {
+        current += 2;
+        isComment = true;
+        continue;
       }
 
       if (/\s/.test(currentElement)) {
@@ -71,7 +75,7 @@ export default function tokenize(input) {
           }
 
           tokens.push({
-            type: Token.DECIMAL,
+            type: TokenType.DECIMAL,
             value: parseFloat(value)
           });
 
@@ -80,7 +84,7 @@ export default function tokenize(input) {
 
         // If not decimal, add it as an int
         tokens.push({
-          type: Token.NUMBER,
+          type: TokenType.NUMBER,
           value: parseInt(value, 10)
         });
 
@@ -88,12 +92,12 @@ export default function tokenize(input) {
       }
 
       if (currentElement === "{") {
-        current++;
-
-        tokens.push({
-          type: Token.START_BRACE,
+        const { tokens: t, cursor } = handleSqwiggleStartBrace({
+          cursor: current
         });
 
+        t.forEach(p => tokens.push(p));
+        current = cursor;
         continue;
       }
 
@@ -101,7 +105,7 @@ export default function tokenize(input) {
         current++;
 
         tokens.push({
-          type: Token.END_BRACE,
+          type: TokenType.END_BRACE
         });
 
         continue;
@@ -111,7 +115,7 @@ export default function tokenize(input) {
         current += 2;
 
         tokens.push({
-          type: Token.IF
+          type: TokenType.IF
         });
 
         continue;
@@ -121,20 +125,22 @@ export default function tokenize(input) {
         current += 4;
 
         tokens.push({
-          type: Token.ELSE
+          type: TokenType.ELSE
         });
 
         continue;
       }
-      
-      if (lookAhead("int", currentRow) || 
-          lookAhead("decimal", currentRow) ||
-          lookAhead("string", currentRow) ||
-          lookAhead("let", currentRow) ) {
+
+      if (
+        lookAhead("int", currentRow) ||
+        lookAhead("decimal", currentRow) ||
+        lookAhead("string", currentRow) ||
+        lookAhead("let", currentRow)
+      ) {
         let variableType = "";
         let variableName = "";
 
-        while(current < colLength && rows[i][current] !== " ") {
+        while (current < colLength && rows[i][current] !== " ") {
           variableType += rows[i][current];
           current++;
         }
@@ -153,7 +159,7 @@ export default function tokenize(input) {
         }
 
         tokens.push({
-          type: Token.VARIABLE,
+          type: TokenType.VARIABLE,
           valueType: variableType,
           value: variableName
         });
@@ -166,25 +172,16 @@ export default function tokenize(input) {
           current += 2;
 
           tokens.push({
-            type: Token.OPERATOR,
+            type: TokenType.OPERATOR,
             value: "=="
           });
           continue;
         }
 
-        if (tokens[tokens.length - 1].type !== Token.VARIABLE) {
-          throw new Error(
-            "Cannot assign value to non variable on line " +
-              (i + 1) +
-              ":" +
-              current
-          );
-        }
-
         current++;
 
         tokens.push({
-          type: Token.ASSIGNMENT
+          type: TokenType.ASSIGNMENT
         });
 
         continue;
@@ -205,9 +202,10 @@ export default function tokenize(input) {
         current++;
 
         tokens.push({
-          type: Token.STRING,
+          type: TokenType.STRING,
           value: value
         });
+
         continue;
       }
 
@@ -216,7 +214,7 @@ export default function tokenize(input) {
         parenCount++;
 
         tokens.push({
-          type: Token.PAREN,
+          type: TokenType.PAREN,
           value: currentElement
         });
 
@@ -232,7 +230,7 @@ export default function tokenize(input) {
         parenCount--;
 
         tokens.push({
-          type: Token.PAREN,
+          type: TokenType.PAREN,
           value: currentElement
         });
 
@@ -250,7 +248,7 @@ export default function tokenize(input) {
         }
 
         tokens.push({
-          type: Token.IDENTIFIER,
+          type: TokenType.IDENTIFIER,
           value: value
         });
 
@@ -264,9 +262,9 @@ export default function tokenize(input) {
         const operator = currentElement.match(/[\!\<\>]/);
         if (operator && rows[i][current] === "=") {
           current++;
-          
+
           tokens.push({
-            type: Token.OPERATOR,
+            type: TokenType.OPERATOR,
             value: `${operator[0]}=`
           });
 
@@ -274,7 +272,7 @@ export default function tokenize(input) {
         }
 
         tokens.push({
-          type: Token.OPERATOR,
+          type: TokenType.OPERATOR,
           value: currentElement
         });
 
@@ -285,7 +283,7 @@ export default function tokenize(input) {
         current++;
 
         tokens.push({
-          type: Token.SEPARATOR
+          type: TokenType.SEPARATOR
         });
 
         continue;
@@ -303,7 +301,7 @@ export default function tokenize(input) {
 
     if (tokens.length > 0) {
       tokens.push({
-        type: Token.END
+        type: TokenType.END
       });
     }
   }
