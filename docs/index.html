@@ -1,118 +1,143 @@
 <html>
-    <head>
-        <title>DyLang</title>
+  <head>
+    <title>DyLang</title>
 
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"
+    />
 
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/mode/javascript/javascript.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/continuecomment.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/edit/matchbrackets.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/comment.js"></script>
-    
-        <style>
-            .columns {
-                padding: 0;
-            }
-            .CodeMirror {
-                border: 1px solid #eee;
-                height: 80%;
-            }
-        </style>
-    </head>
-    <body style="height: 100%">
-        <div class="row" style="margin-top: 20px; height: 100vh; min-height: 600px;">
-            <div class="small-6 medium-7 columns">
-                <textarea id="code">
-##
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/mode/javascript/javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/continuecomment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.13.4/addon/comment/comment.js"></script>
+
+    <style>
+      .columns {
+        padding: 0;
+      }
+      .CodeMirror {
+        border: 1px solid #eee;
+        height: 80%;
+      }
+    </style>
+  </head>
+  <body style="height: 100%">
+    <div
+      class="row"
+      style="margin-top: 20px; height: 100vh; min-height: 600px;"
+    >
+      <div class="small-6 medium-7 columns">
+        <textarea id="code">
+/*
     Multi
     Line
     Comment
-#
+*/
 
-# Variables!
+// Variables!
 int a = 2 + 3
 decimal b = 2.5
 string foo = 'bar!'
 
-# 'let' is a dynamic type!
+// 'let' is a dynamic type!
 let result = (Math.pow b a)
 
 if result > a {
     (console.log foo)
 } else {
     (console.log 'Nope!')
-}</textarea>
+}</textarea
+        >
 
-                <button type="button" class="button expanded">Compile</button>
-            </div>
+        <button type="button" class="button expanded">Compile</button>
+      </div>
 
-            <div class="small-6 medium-5 columns" style="padding: 5px;">
-                <div class="callout alert hide" id="error__result"></div>
+      <div class="small-6 medium-5 columns" style="padding: 5px;">
+        <div class="callout alert hide" id="error__result"></div>
 
-                <span class="label secondary">Result</span>
+        <span class="label secondary">Result <i class="elapsed"></i></span>
 
-                <div id="code__result" style="overflow-y: auto; max-height: 50vh;"></div>
+        <div
+          id="code__result"
+          style="overflow-y: auto; max-height: 50vh;"
+        ></div>
 
-                <hr style="margin: 15px; background: #F1F1F1;" />
+        <hr style="margin: 15px; background: #F1F1F1;" />
 
-                <span class="label secondary">Generated</span>
+        <span class="label secondary">Generated</span>
 
-                <div
-                    id="generated__result"
-                    style="overflow-y: auto; max-height: 50vh;font-size: 12px"
-                >
-                </div>
-            </div>
-        </div>
+        <div
+          id="generated__result"
+          style="overflow-y: auto; max-height: 50vh;font-size: 12px"
+        ></div>
+      </div>
+    </div>
 
-        <hr />
+    <hr />
 
-        <div class="row">
-            <div class="small-12">
-                <i class="fa fa-github" aria-hidden="true"></i> Check out <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
-            </div>
-        </div>
+    <div class="row">
+      <div class="small-12">
+        <i class="fa fa-github" aria-hidden="true"></i> Check out
+        <a href="https://github.com/ganderzz/DyLang">GitHub</a> for more info!
+      </div>
+    </div>
 
-        <script>
-            window.onload = function() {
-                var codeEditor = document.getElementById("code");
-                var resultField = document.querySelector("#code__result");
-                var errorField = document.querySelector("#error__result");
-                var generatedField = document.querySelector("#generated__result");
+    <script>
+      window.onload = function() {
+        var codeEditor = document.getElementById("code");
+        var resultField = document.querySelector("#code__result");
+        var errorField = document.querySelector("#error__result");
+        var generatedField = document.querySelector("#generated__result");
 
-                var editor = CodeMirror.fromTextArea(codeEditor, {
-                    lineNumbers: true
-                });
+        var editor = CodeMirror.fromTextArea(codeEditor, {
+          lineNumbers: true
+        });
 
-                console.log = function(value) {
-                    resultField.innerHTML = value;
-                }
+        console.log = function(value) {
+          resultField.innerHTML = value;
+        };
 
-                document.querySelector("button").addEventListener("click", function() {
-                    var code = document.querySelector("#code").value;
-                    
-                    resultField.innerHTML = "";
-                    errorField.classList.add("hide");
+        document.querySelector("button").addEventListener("click", function() {
+          var code = document.querySelector("#code").value;
 
-                    try {
-                        var compiled = dylang(editor.getValue());
+          resultField.innerHTML = "";
+          errorField.classList.add("hide");
 
-                        generatedField.innerHTML = compiled;
-                        eval(compiled);
-                    } catch(exception) {
-                        errorField.classList.remove("hide");
-                        errorField.innerHTML = exception;
+          var start = performance.now();
 
-                        throw exception;
-                    }
-                });
-            }
-        </script>
+          try {
+            var compiled = dylang(editor.getValue());
+
+            generatedField.innerHTML = compiled;
+            eval(compiled);
+          } catch (exception) {
+            errorField.classList.remove("hide");
+            errorField.innerHTML = exception;
+
+            throw exception;
+          }
+
+          document.querySelector(".elapsed").innerHTML =
+            "(" + (performance.now() - start) + "ms)";
+        });
+      };
+    </script>
 
     <script src="./dylang.js"></script>
-    </body>
+  </body>
 </html>

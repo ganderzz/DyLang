@@ -1,18 +1,10 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "modules": false
       }
     ]
-  ],
-  "env": {
-    "test": {
-      "presets": ["es2015-node4"]
-    }
-  },
-  "plugins": [
-    "external-helpers"
   ]
 }

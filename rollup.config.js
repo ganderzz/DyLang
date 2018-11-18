@@ -1,29 +1,23 @@
 import resolve from "rollup-plugin-node-resolve";
 import babel from "rollup-plugin-babel";
-import uglify from "rollup-plugin-uglify";
-import { minify } from "uglify-js";
+import typescript from "rollup-plugin-typescript";
 
 const packageVersion = require("./package.json").version || "";
 
 export default {
-  entry: "src/index.js",
+  entry: "src/index.ts",
   format: "umd",
   banner: "/* @dylang " + packageVersion + " */",
   plugins: [
-    resolve(),
-    babel({
-      exclude: "node_modules/**",
-      plugins: ['external-helpers']
+    resolve({
+      module: true,
+      jsnext: true,
+      extensions: ["js", "ts"]
     }),
-    uglify({
-      output: {
-        comments: function(node, comment) {
-            if (comment.type === "comment2") {
-                return comment.value.indexOf("@dylang") > -1;
-            }
-        }
-      }
-    }, minify)
+    typescript({ typescript: require("typescript") }),
+    babel({
+      exclude: "node_modules/**"
+    })
   ],
   moduleName: "dylang",
   dest: "./docs/dylang.js"
