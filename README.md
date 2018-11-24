@@ -14,9 +14,9 @@ This is an ever growing project as I dive into how compilers work.
 
 ```
 /*
-    Multi
-    Line
-    Comment
+  Multi
+  Line
+  Comment
 */
 
 // Variables!
@@ -24,17 +24,18 @@ int a = 2 + 3
 decimal b = 2.5
 string foo = 'bar!'
 
-// 'let' is a dynamic type!
-let result = (Math.pow b a)
+fn three() {
+  return 3
+}
 
-if result > a {
-    (console.log foo)
+if three() > a {
+  console.log(foo)
 } else {
-    (console.log 'Nope!')
+  console.log('Nope!')
 }
 ```
 
-[View the result](http://dylanpaulus.com/DyLang/)
+[View the result](https://ganderzz.github.io/DyLang/)
 
 ### Contribute
 

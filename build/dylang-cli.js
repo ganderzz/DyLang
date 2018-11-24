@@ -3,7 +3,7 @@
 
 function javaScriptGenerator(node) {
     if (!node) {
-        return;
+        return "";
     }
     switch (node.type) {
         case "Program":
@@ -12,10 +12,22 @@ function javaScriptGenerator(node) {
         case "ExpressionStatement":
             return javaScriptGenerator(node.expression);
         case "CallExpression":
-            return (javaScriptGenerator(node.callee) +
-                "(" +
-                node.arguments.map(javaScriptGenerator) +
-                ")");
+            console.warn(node);
+            var name = (node.callee ? node.callee.value : node.name) + "(";
+            if (node.params) {
+                name += node.params.map(javaScriptGenerator).join(",");
+            }
+            if (node.arguments) {
+                name += node.arguments.map(javaScriptGenerator).join(",");
+            }
+            name += ")";
+            return name;
+        case "Return":
+            return "return " + node.value.map(javaScriptGenerator).join(" ") + ";";
+        case "Function":
+            return "function " + node.name.value + "() {" + node.body
+                .map(javaScriptGenerator)
+                .join(" ") + "}";
         case "Variable":
             if (node.value.length > 0) {
                 return "var " + javaScriptGenerator(node.name) + "=" + node.value
@@ -56,27 +68,44 @@ function getNodeType(type) {
             return "auto";
     }
 }
+function getReturnType(node) {
+    if (node && node.body) {
+        var returnNode = node.body.filter(function (p) { return p.type === "Return"; })[0];
+        if (returnNode) {
+            return getNodeType(returnNode.value[0]);
+        }
+    }
+    return "void";
+}
 var stl = "void print(std::string args) { std::cout << args << std::endl; }";
-function cppGenerator(node) {
+function cppGenerator(node, includeSemiColon) {
+    if (includeSemiColon === void 0) { includeSemiColon = true; }
     if (!node) {
         return;
     }
     switch (node.type) {
         case "Program":
-            return ("#include <iostream> \n" + stl + node.body.map(cppGenerator).join(""));
+            return ("#include <iostream> \n" + stl + node.body.map(cppGenerator).join(" "));
         case "Assignment":
         case "ExpressionStatement":
             return cppGenerator(node.expression);
         case "CallExpression":
             var name = node.name + "(";
             if (node.params) {
-                name += node.params.map(cppGenerator);
+                name += node.params.map(function (p) { return cppGenerator(p, false); }).join(",");
             }
-            name += ");";
+            name += ")";
+            if (includeSemiColon) {
+                name += ";";
+            }
             return name;
         case "Function":
-            console.log(node.body);
-            return "int " + node.name.value + "() {" + node.body.map(cppGenerator) + "}";
+            var returnType = getReturnType(node);
+            return returnType + " " + node.name.value + "() {" + node.body
+                .map(cppGenerator)
+                .join(" ") + "}";
+        case "Return":
+            return "return " + node.value.map(cppGenerator).join(" ") + ";";
         case "Variable":
             // Variable declaration
             if (node.value.length > 0) {
@@ -88,7 +117,7 @@ function cppGenerator(node) {
             return cppGenerator(node.name);
         case "IfStatement":
             return "if(" + node.conditional
-                .map(cppGenerator)
+                .map(function (p) { return cppGenerator(p, false); })
                 .join(" ") + "){" + node.body.map(cppGenerator).join(" ") + "}";
         case "ElseStatement":
             return "else{" + node.body.map(cppGenerator).join(" ") + "}";
@@ -105,22 +134,24 @@ function cppGenerator(node) {
 
 var TokenType;
 (function (TokenType) {
-    TokenType[TokenType["PAREN"] = 0] = "PAREN";
-    TokenType[TokenType["IDENTIFIER"] = 1] = "IDENTIFIER";
-    TokenType[TokenType["OPERATOR"] = 2] = "OPERATOR";
-    TokenType[TokenType["END"] = 3] = "END";
-    TokenType[TokenType["STRING"] = 4] = "STRING";
-    TokenType[TokenType["ASSIGNMENT"] = 5] = "ASSIGNMENT";
-    TokenType[TokenType["VARIABLE"] = 6] = "VARIABLE";
-    TokenType[TokenType["NUMBER"] = 7] = "NUMBER";
-    TokenType[TokenType["DECIMAL"] = 8] = "DECIMAL";
-    TokenType[TokenType["IF"] = 9] = "IF";
-    TokenType[TokenType["START_BRACE"] = 10] = "START_BRACE";
-    TokenType[TokenType["END_BRACE"] = 11] = "END_BRACE";
-    TokenType[TokenType["NONE"] = 12] = "NONE";
-    TokenType[TokenType["ELSE"] = 13] = "ELSE";
-    TokenType[TokenType["SEPARATOR"] = 14] = "SEPARATOR";
-    TokenType[TokenType["FUNCTION_DECLARATION"] = 15] = "FUNCTION_DECLARATION";
+    TokenType[TokenType["PAREN_START"] = 0] = "PAREN_START";
+    TokenType[TokenType["PAREN_END"] = 1] = "PAREN_END";
+    TokenType[TokenType["IDENTIFIER"] = 2] = "IDENTIFIER";
+    TokenType[TokenType["OPERATOR"] = 3] = "OPERATOR";
+    TokenType[TokenType["END"] = 4] = "END";
+    TokenType[TokenType["STRING"] = 5] = "STRING";
+    TokenType[TokenType["ASSIGNMENT"] = 6] = "ASSIGNMENT";
+    TokenType[TokenType["VARIABLE"] = 7] = "VARIABLE";
+    TokenType[TokenType["NUMBER"] = 8] = "NUMBER";
+    TokenType[TokenType["DECIMAL"] = 9] = "DECIMAL";
+    TokenType[TokenType["IF"] = 10] = "IF";
+    TokenType[TokenType["START_BRACE"] = 11] = "START_BRACE";
+    TokenType[TokenType["END_BRACE"] = 12] = "END_BRACE";
+    TokenType[TokenType["NONE"] = 13] = "NONE";
+    TokenType[TokenType["ELSE"] = 14] = "ELSE";
+    TokenType[TokenType["SEPARATOR"] = 15] = "SEPARATOR";
+    TokenType[TokenType["FUNCTION_DECLARATION"] = 16] = "FUNCTION_DECLARATION";
+    TokenType[TokenType["RETURN"] = 17] = "RETURN";
 })(TokenType || (TokenType = {}));
 
 function parser(tokens) {
@@ -152,6 +183,21 @@ function parser(tokens) {
                     type: "Operator",
                     value: token.value
                 };
+            case TokenType.RETURN:
+                var rnode = {
+                    type: "Return",
+                    value: []
+                };
+                token = tokens[++current];
+                while (token.type !== TokenType.END) {
+                    if (!token || !token.type) {
+                        throw new Error("Found infinite loop... bailing");
+                    }
+                    rnode.value.push(walk());
+                    token = tokens[current];
+                }
+                current++;
+                return rnode;
             case TokenType.FUNCTION_DECLARATION:
                 current++;
                 if (tokens[current].type !== TokenType.IDENTIFIER) {
@@ -210,7 +256,7 @@ function parser(tokens) {
                     type: "Identifier",
                     value: tokens[current - 1].value
                 };
-                if (tokens[current].type === TokenType.PAREN) {
+                if (tokens[current].type === TokenType.PAREN_START) {
                     current++;
                     var idcenode = {
                         type: "CallExpression",
@@ -218,7 +264,6 @@ function parser(tokens) {
                         params: []
                     };
                     idcenode.params.push(walk());
-                    current++;
                     return idcenode;
                 }
                 return idnode;
@@ -261,34 +306,15 @@ function parser(tokens) {
                 }
                 token = tokens[++current];
                 return enode;
-            // case TokenType.PAREN:
-            //   if (token.value === "(") {
-            //     token = tokens[++current];
-            //     let node = {
-            //       type: "CallExpression",
-            //       name: token.value,
-            //       params: []
-            //     };
-            //     token = tokens[++current];
-            //     while (
-            //       token.type !== TokenType.PAREN ||
-            //       (token.type === TokenType.PAREN && token.value !== ")") ||
-            //       token.type === TokenType.END
-            //     ) {
-            //       node.params.push(walk());
-            //       token = tokens[current];
-            //     }
-            //     current++;
-            //     return node;
-            //   }
             case TokenType.END:
             case TokenType.START_BRACE:
             case TokenType.END_BRACE:
-            case TokenType.PAREN:
+            case TokenType.PAREN_START:
+            case TokenType.PAREN_END:
                 current++;
                 return;
         }
-        throw new TypeError("Invalid Type: " + token.type);
+        throw new TypeError("Invalid Type: " + token ? token.type : token);
     }
     var ast = {
         type: "Program",
@@ -319,22 +345,17 @@ function traverser(ast, visitor) {
     }
 
     switch (node.type) {
-      case "Program":
-        traverseArray(node.body, node);
-        break;
-
       case "CallExpression":
         traverseArray(node.params, node);
         break;
 
       case "Variable":
+      case "Return":
         traverseArray(node.value, node);
         break;
 
+      case "Program":
       case "Function":
-        traverseArray(node.body, node);
-        break;
-
       case "ElseStatement":
       case "IfStatement":
         traverseArray(node.body, node);
@@ -410,9 +431,13 @@ function transformer(ast) {
         },
         Separator: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "Separator"
-                });
+                parent._context.push(node);
+            }
+        },
+        Return: {
+            enter: function (node, parent) {
+                node._context = [];
+                parent._context.push(node);
             }
         },
         Variable: {
@@ -504,6 +529,18 @@ function handleSqwiggleStartBrace(_a) {
     };
 }
 
+function handleFunctionDeclaration(_a) {
+    var cursor = _a.cursor;
+    return {
+        tokens: [
+            {
+                type: TokenType.FUNCTION_DECLARATION
+            }
+        ],
+        cursor: cursor + 2
+    };
+}
+
 function lookAhead(needle, row) {
     for (var i = 0; row[i] !== " " && i < row.length; i++) {
         if (needle[i] !== row[i]) {
@@ -544,6 +581,13 @@ function tokenize(input) {
             }
             if (/\s/.test(currentElement)) {
                 current++;
+                continue;
+            }
+            if (lookAhead("return", currentRow)) {
+                current += 6;
+                tokens.push({
+                    type: TokenType.RETURN
+                });
                 continue;
             }
             if (/[0-9]/.test(currentElement)) {
@@ -590,10 +634,11 @@ function tokenize(input) {
                 continue;
             }
             if (lookAhead("fn", currentRow)) {
-                current += 2;
-                tokens.push({
-                    type: TokenType.FUNCTION_DECLARATION
-                });
+                var _b = handleFunctionDeclaration({
+                    cursor: current
+                }), t = _b.tokens, cursor = _b.cursor;
+                t.forEach(function (p) { return tokens.push(p); });
+                current = cursor;
                 continue;
             }
             if (lookAhead("if", currentRow)) {
@@ -670,7 +715,7 @@ function tokenize(input) {
                 current++;
                 parenCount++;
                 tokens.push({
-                    type: TokenType.PAREN,
+                    type: TokenType.PAREN_START,
                     value: currentElement
                 });
                 continue;
@@ -682,7 +727,7 @@ function tokenize(input) {
                 current++;
                 parenCount--;
                 tokens.push({
-                    type: TokenType.PAREN,
+                    type: TokenType.PAREN_END,
                     value: currentElement
                 });
                 continue;
@@ -744,87 +789,6 @@ function tokenize(input) {
     }
     return tokens;
 }
-
-var hasValidValues = function (values) {
-    var usableValues = values.filter(function (item) {
-        switch (item.type) {
-            case "DecimalLiteral":
-            case "NumberLiteral":
-            case "StringLiteral":
-            case "Operator":
-                return true;
-        }
-        return false;
-    });
-    return usableValues.length === values.length;
-};
-var getValue = function (item) {
-    if (item.value) {
-        return item.value;
-    }
-    if (item.token) {
-        return item.token;
-    }
-};
-var hasOperator = function (values) {
-    return values.filter(function (item) { return item.type === "Operator"; }).length > 0;
-};
-var hasDefinedVariable = function (values, variableHash) {
-    return values.filter(function (item, i) { return variableHash[item.value]; }).length > 0;
-};
-var walker = function (ast, variableHash) {
-    if (ast.type === "Assignment") {
-        var expression = ast.expression;
-        var values = expression.value;
-        if (hasValidValues(values) && hasOperator(values)) {
-            var newValue = {
-                type: values[0].type,
-                value: eval(values.map(function (item) { return getValue(item); }).join(""))
-            };
-            ast.expression.value = [newValue];
-            variableHash[expression.name.value] = newValue;
-        }
-        else if (hasValidValues(values) && values.length === 1) {
-            variableHash[expression.name.value] = values[0];
-        }
-    }
-    if (ast.type === "IfStatement") {
-        ast.body = ast.body.map(function (item) { return walker(item, variableHash); });
-        var conditional = ast.conditional;
-        if (hasValidValues(conditional) && hasOperator(conditional)) {
-            ast.conditional = [
-                {
-                    type: "NumberLiteral",
-                    value: eval(ast.conditional.map(function (item) { return getValue(item); }).join(""))
-                        ? 1
-                        : 0
-                }
-            ];
-        }
-        else if (hasDefinedVariable(conditional, variableHash)) {
-            ast.conditional = conditional.map(function (item) {
-                if (variableHash[item.value]) {
-                    return variableHash[item.value];
-                }
-                return item;
-            });
-        }
-    }
-    if (ast.type === "Identifier" && hasDefinedVariable([ast], variableHash)) {
-        return variableHash[ast.value];
-    }
-    if (ast.type === "ExpressionStatement") {
-        ast.expression.arguments = ast.expression.arguments.map(function (item) {
-            return walker(item, variableHash);
-        });
-    }
-    return ast;
-};
-var optimizer = function (ast) {
-    var variableHash = {};
-    ast.body = ast.body.map(function (item) { return walker(item, variableHash); });
-    return ast;
-};
 
 function logError(values, elem, type, index) {
     var hint = values
@@ -912,8 +876,7 @@ var dylang = (function (code, flags) {
     var p = parser(t);
     typeChecker(p);
     var tr = transformer(p);
-    var o = optimizer(tr);
-    var g = getGenerator(flags && flags.output)(o);
+    var g = getGenerator(flags && flags.output)(tr);
     return g;
 });
 

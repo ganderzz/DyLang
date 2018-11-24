@@ -18,9 +18,21 @@ function getNodeType(type: { type: string; value: any }) {
   }
 }
 
+function getReturnType(node): string {
+  if (node && node.body) {
+    const returnNode = node.body.filter(p => p.type === "Return")[0];
+
+    if (returnNode) {
+      return getNodeType(returnNode.value[0]);
+    }
+  }
+
+  return "void";
+}
+
 const stl = `void print(std::string args) { std::cout << args << std::endl; }`;
 
-export default function cppGenerator(node) {
+export default function cppGenerator(node, includeSemiColon = true) {
   if (!node) {
     return;
   }
@@ -28,7 +40,7 @@ export default function cppGenerator(node) {
   switch (node.type) {
     case "Program":
       return (
-        "#include <iostream> \n" + stl + node.body.map(cppGenerator).join("")
+        "#include <iostream> \n" + stl + node.body.map(cppGenerator).join(" ")
       );
 
     case "Assignment":
@@ -38,15 +50,24 @@ export default function cppGenerator(node) {
     case "CallExpression":
       let name = node.name + "(";
       if (node.params) {
-        name += node.params.map(cppGenerator);
+        name += node.params.map(p => cppGenerator(p, false)).join(",");
       }
-      name += ");";
+      name += ")";
+
+      if (includeSemiColon) {
+        name += ";";
+      }
 
       return name;
 
     case "Function":
-      console.log(node.body);
-      return `int ${node.name.value}() {${node.body.map(cppGenerator)}}`;
+      const returnType = getReturnType(node);
+      return `${returnType} ${node.name.value}() {${node.body
+        .map(cppGenerator)
+        .join(" ")}}`;
+
+    case "Return":
+      return `return ${node.value.map(cppGenerator).join(" ")};`;
 
     case "Variable":
       // Variable declaration
@@ -61,7 +82,7 @@ export default function cppGenerator(node) {
 
     case "IfStatement":
       return `if(${node.conditional
-        .map(cppGenerator)
+        .map(p => cppGenerator(p, false))
         .join(" ")}){${node.body.map(cppGenerator).join(" ")}}`;
 
     case "ElseStatement":

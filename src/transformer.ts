@@ -56,9 +56,14 @@ export default function transformer(ast) {
 
     Separator: {
       enter(node, parent) {
-        parent._context.push({
-          type: "Separator"
-        });
+        parent._context.push(node);
+      }
+    },
+
+    Return: {
+      enter(node, parent) {
+        node._context = [];
+        parent._context.push(node);
       }
     },
 

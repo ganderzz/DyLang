@@ -1,5 +1,6 @@
 export enum TokenType {
-  PAREN,
+  PAREN_START,
+  PAREN_END,
   IDENTIFIER,
   OPERATOR,
   END,
@@ -14,5 +15,6 @@ export enum TokenType {
   NONE,
   ELSE,
   SEPARATOR,
-  FUNCTION_DECLARATION
+  FUNCTION_DECLARATION,
+  RETURN
 }

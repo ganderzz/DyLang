@@ -11,6 +11,6 @@ export function handleFunctionDeclaration({
         type: TokenType.FUNCTION_DECLARATION
       }
     ],
-    cursor: cursor + 1
+    cursor: cursor + 2
   };
 }

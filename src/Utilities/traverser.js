@@ -16,22 +16,17 @@ export default function traverser(ast, visitor) {
     }
 
     switch (node.type) {
-      case "Program":
-        traverseArray(node.body, node);
-        break;
-
       case "CallExpression":
         traverseArray(node.params, node);
         break;
 
       case "Variable":
+      case "Return":
         traverseArray(node.value, node);
         break;
 
+      case "Program":
       case "Function":
-        traverseArray(node.body, node);
-        break;
-
       case "ElseStatement":
       case "IfStatement":
         traverseArray(node.body, node);

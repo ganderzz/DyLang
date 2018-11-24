@@ -2,7 +2,6 @@ import { javaScriptGenerator, cppGenerator } from "./generator";
 import parser from "./parser";
 import transformer from "./transformer";
 import { tokenize } from "./Tokenize";
-import { optimizer } from "./optimizer";
 import typeChecker from "./typeChecker";
 
 function getGenerator(type) {
@@ -26,8 +25,7 @@ export default (code, flags = { output: "js" }) => {
   typeChecker(p);
 
   const tr = transformer(p);
-  const o = optimizer(tr);
-  const g = getGenerator(flags && flags.output)(o);
+  const g = getGenerator(flags && flags.output)(tr);
 
   return g;
 };

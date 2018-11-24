@@ -1,6 +1,7 @@
 import { TokenType } from "../Enums/Token";
 import { handleSqwiggleStartBrace } from "./Functions/sqwiggleStartBrace";
 import { IToken } from "../Interfaces/IToken";
+import { handleFunctionDeclaration } from "./Functions/functionDeclaration";
 
 function lookAhead(needle, row) {
   for (let i = 0; row[i] !== " " && i < row.length; i++) {
@@ -52,6 +53,16 @@ export function tokenize(input: string) {
 
       if (/\s/.test(currentElement)) {
         current++;
+        continue;
+      }
+
+      if (lookAhead("return", currentRow)) {
+        current += 6;
+
+        tokens.push({
+          type: TokenType.RETURN
+        });
+
         continue;
       }
 
@@ -112,12 +123,12 @@ export function tokenize(input: string) {
       }
 
       if (lookAhead("fn", currentRow)) {
-        current += 2;
-
-        tokens.push({
-          type: TokenType.FUNCTION_DECLARATION
+        const { tokens: t, cursor } = handleFunctionDeclaration({
+          cursor: current
         });
 
+        t.forEach(p => tokens.push(p));
+        current = cursor;
         continue;
       }
 
@@ -224,7 +235,7 @@ export function tokenize(input: string) {
         parenCount++;
 
         tokens.push({
-          type: TokenType.PAREN,
+          type: TokenType.PAREN_START,
           value: currentElement
         });
 
@@ -240,7 +251,7 @@ export function tokenize(input: string) {
         parenCount--;
 
         tokens.push({
-          type: TokenType.PAREN,
+          type: TokenType.PAREN_END,
           value: currentElement
         });
 

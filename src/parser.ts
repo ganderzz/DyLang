@@ -35,6 +35,25 @@ export default function parser(tokens) {
           value: token.value
         };
 
+      case TokenType.RETURN:
+        const rnode = {
+          type: "Return",
+          value: []
+        };
+        token = tokens[++current];
+
+        while (token.type !== TokenType.END) {
+          if (!token || !token.type) {
+            throw new Error("Found infinite loop... bailing");
+          }
+
+          rnode.value.push(walk());
+          token = tokens[current];
+        }
+        current++;
+
+        return rnode;
+
       case TokenType.FUNCTION_DECLARATION:
         current++;
 
@@ -104,7 +123,7 @@ export default function parser(tokens) {
           value: tokens[current - 1].value
         };
 
-        if (tokens[current].type === TokenType.PAREN) {
+        if (tokens[current].type === TokenType.PAREN_START) {
           current++;
           const idcenode = {
             type: "CallExpression",
@@ -113,7 +132,6 @@ export default function parser(tokens) {
           };
 
           idcenode.params.push(walk());
-          current++;
 
           return idcenode;
         }
@@ -168,40 +186,16 @@ export default function parser(tokens) {
 
         return enode;
 
-      // case TokenType.PAREN:
-      //   if (token.value === "(") {
-      //     token = tokens[++current];
-
-      //     let node = {
-      //       type: "CallExpression",
-      //       name: token.value,
-      //       params: []
-      //     };
-      //     token = tokens[++current];
-
-      //     while (
-      //       token.type !== TokenType.PAREN ||
-      //       (token.type === TokenType.PAREN && token.value !== ")") ||
-      //       token.type === TokenType.END
-      //     ) {
-      //       node.params.push(walk());
-      //       token = tokens[current];
-      //     }
-
-      //     current++;
-
-      //     return node;
-      //   }
-
       case TokenType.END:
       case TokenType.START_BRACE:
       case TokenType.END_BRACE:
-      case TokenType.PAREN:
+      case TokenType.PAREN_START:
+      case TokenType.PAREN_END:
         current++;
         return;
     }
 
-    throw new TypeError("Invalid Type: " + token.type);
+    throw new TypeError("Invalid Type: " + token ? token.type : token);
   }
 
   let ast = {

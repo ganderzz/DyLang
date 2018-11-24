@@ -1,6 +1,6 @@
 export default function javaScriptGenerator(node) {
   if (!node) {
-    return;
+    return "";
   }
 
   switch (node.type) {
@@ -12,12 +12,25 @@ export default function javaScriptGenerator(node) {
       return javaScriptGenerator(node.expression);
 
     case "CallExpression":
-      return (
-        javaScriptGenerator(node.callee) +
-        "(" +
-        node.arguments.map(javaScriptGenerator) +
-        ")"
-      );
+      console.warn(node);
+      let name = (node.callee ? node.callee.value : node.name) + "(";
+      if (node.params) {
+        name += node.params.map(javaScriptGenerator).join(",");
+      }
+      if (node.arguments) {
+        name += node.arguments.map(javaScriptGenerator).join(",");
+      }
+      name += ")";
+
+      return name;
+
+    case "Return":
+      return `return ${node.value.map(javaScriptGenerator).join(" ")};`;
+
+    case "Function":
+      return `function ${node.name.value}() {${node.body
+        .map(javaScriptGenerator)
+        .join(" ")}}`;
 
     case "Variable":
       if (node.value.length > 0) {
