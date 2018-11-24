@@ -127,11 +127,15 @@ export default function parser(tokens) {
           current++;
           const idcenode = {
             type: "CallExpression",
-            name: tokens[current - 2].value,
-            params: []
+            callee: {
+              type: "Identifier",
+              value: tokens[current - 2].value
+            },
+            arguments: [],
+            expression: null
           };
 
-          idcenode.params.push(walk());
+          idcenode.arguments.push(walk());
 
           return idcenode;
         }

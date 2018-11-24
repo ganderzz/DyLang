@@ -9,7 +9,8 @@ fn noMatch() {
 }
 
 fn add() {
-    return 3 - 2
+    let a = 5
+    return a
 }
 
 fn main() {

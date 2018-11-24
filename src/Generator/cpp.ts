@@ -3,6 +3,8 @@ function getNodeType(type: { type: string; value: any }) {
     throw new Error(`Could not find the type of ${type.type} (${type.value})`);
   }
 
+  console.log(type);
+
   switch (type.type) {
     case "StringLiteral":
       return "std::string";
@@ -48,9 +50,9 @@ export default function cppGenerator(node, includeSemiColon = true) {
       return cppGenerator(node.expression);
 
     case "CallExpression":
-      let name = node.name + "(";
-      if (node.params) {
-        name += node.params.map(p => cppGenerator(p, false)).join(",");
+      let name = cppGenerator(node.callee) + "(";
+      if (node.arguments) {
+        name += node.arguments.map(p => cppGenerator(p, false)).join(",");
       }
       name += ")";
 

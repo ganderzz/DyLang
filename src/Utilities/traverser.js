@@ -17,7 +17,7 @@ export default function traverser(ast, visitor) {
 
     switch (node.type) {
       case "CallExpression":
-        traverseArray(node.params, node);
+        traverseArray(node.arguments, node);
         break;
 
       case "Variable":

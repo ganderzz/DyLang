@@ -57,6 +57,7 @@ function getNodeType(type) {
     if (!type) {
         throw new Error("Could not find the type of " + type.type + " (" + type.value + ")");
     }
+    console.log(type);
     switch (type.type) {
         case "StringLiteral":
             return "std::string";
@@ -90,9 +91,9 @@ function cppGenerator(node, includeSemiColon) {
         case "ExpressionStatement":
             return cppGenerator(node.expression);
         case "CallExpression":
-            var name = node.name + "(";
-            if (node.params) {
-                name += node.params.map(function (p) { return cppGenerator(p, false); }).join(",");
+            var name = cppGenerator(node.callee) + "(";
+            if (node.arguments) {
+                name += node.arguments.map(function (p) { return cppGenerator(p, false); }).join(",");
             }
             name += ")";
             if (includeSemiColon) {
@@ -260,10 +261,14 @@ function parser(tokens) {
                     current++;
                     var idcenode = {
                         type: "CallExpression",
-                        name: tokens[current - 2].value,
-                        params: []
+                        callee: {
+                            type: "Identifier",
+                            value: tokens[current - 2].value
+                        },
+                        arguments: [],
+                        expression: null
                     };
-                    idcenode.params.push(walk());
+                    idcenode.arguments.push(walk());
                     return idcenode;
                 }
                 return idnode;
@@ -346,7 +351,7 @@ function traverser(ast, visitor) {
 
     switch (node.type) {
       case "CallExpression":
-        traverseArray(node.params, node);
+        traverseArray(node.arguments, node);
         break;
 
       case "Variable":
@@ -901,7 +906,7 @@ function cli(args) {
                 if (err) {
                     return console.log(err);
                 }
-                exec("clang++ -std=c++11 " + outputPath, function (err, stdout, stderr) {
+                exec("clang++ -std=c++14 " + outputPath, function (err, stdout, stderr) {
                     console.log(stdout);
                     console.log(stderr);
                     exec("rm " + outputPath);

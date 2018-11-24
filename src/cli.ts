@@ -26,7 +26,7 @@ function cli(args) {
           return console.log(err);
         }
 
-        exec(`clang++ -std=c++11 ${outputPath}`, (err, stdout, stderr) => {
+        exec(`clang++ -std=c++14 ${outputPath}`, (err, stdout, stderr) => {
           console.log(stdout);
           console.log(stderr);
 
