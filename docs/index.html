@@ -121,7 +121,7 @@ if result > a {
           var start = performance.now();
 
           try {
-            var compiled = dylang(editor.getValue(), { output: "js" });
+            var compiled = dylang(editor.getValue(), { output: "cpp" });
 
             generatedField.innerHTML = compiled;
             //eval(compiled);

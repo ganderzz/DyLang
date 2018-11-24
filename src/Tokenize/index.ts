@@ -111,6 +111,16 @@ export function tokenize(input: string) {
         continue;
       }
 
+      if (lookAhead("fn", currentRow)) {
+        current += 2;
+
+        tokens.push({
+          type: TokenType.FUNCTION_DECLARATION
+        });
+
+        continue;
+      }
+
       if (lookAhead("if", currentRow)) {
         current += 2;
 

@@ -93,6 +93,20 @@ export default function transformer(ast) {
       }
     },
 
+    Function: {
+      enter(node, parent) {
+        let expression = {
+          type: "Function",
+          name: node.name,
+          body: node.body
+        };
+
+        node._context = [];
+
+        parent._context.push(expression);
+      }
+    },
+
     IfStatement: {
       enter(node, parent) {
         let expression = {
@@ -133,13 +147,6 @@ export default function transformer(ast) {
         } as any;
 
         node._context = expression.arguments;
-
-        if (parent.type !== "CallExpression") {
-          expression = {
-            type: "ExpressionStatement",
-            expression: expression
-          };
-        }
 
         parent._context.push(expression);
       }

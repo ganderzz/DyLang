@@ -13,5 +13,6 @@ export enum TokenType {
   END_BRACE,
   NONE,
   ELSE,
-  SEPARATOR
+  SEPARATOR,
+  FUNCTION_DECLARATION
 }

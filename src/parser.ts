@@ -35,6 +35,47 @@ export default function parser(tokens) {
           value: token.value
         };
 
+      case TokenType.FUNCTION_DECLARATION:
+        current++;
+
+        if (tokens[current].type !== TokenType.IDENTIFIER) {
+          throw new Error("Missing identifier after function declaration");
+        }
+
+        let fnode = {
+          type: "Function",
+          name: tokens[current],
+          body: []
+        };
+
+        let braceCount = 1;
+
+        while (tokens[current].type !== TokenType.START_BRACE) {
+          if (!tokens[current]) {
+            throw new Error("Could not find the start of the function");
+          }
+
+          current++;
+        }
+        current++;
+
+        while (tokens[current] && braceCount > 0) {
+          if (tokens[current].type === TokenType.END_BRACE) {
+            braceCount--;
+            current++;
+          } else if (tokens[current].type === TokenType.START_BRACE) {
+            braceCount++;
+            current++;
+          } else {
+            const val = walk();
+            if (val) {
+              fnode.body.push(val);
+            }
+          }
+        }
+
+        return fnode;
+
       case TokenType.VARIABLE:
         let node = {
           type: "Variable",
@@ -58,10 +99,26 @@ export default function parser(tokens) {
 
       case TokenType.IDENTIFIER:
         current++;
-        return {
+        const idnode = {
           type: "Identifier",
-          value: token.value
+          value: tokens[current - 1].value
         };
+
+        if (tokens[current].type === TokenType.PAREN) {
+          current++;
+          const idcenode = {
+            type: "CallExpression",
+            name: tokens[current - 2].value,
+            params: []
+          };
+
+          idcenode.params.push(walk());
+          current++;
+
+          return idcenode;
+        }
+
+        return idnode;
 
       case TokenType.SEPARATOR:
         current++;
@@ -111,32 +168,35 @@ export default function parser(tokens) {
 
         return enode;
 
-      case TokenType.PAREN:
-        if (token.value === "(") {
-          token = tokens[++current];
+      // case TokenType.PAREN:
+      //   if (token.value === "(") {
+      //     token = tokens[++current];
 
-          let node = {
-            type: "CallExpression",
-            name: token.value,
-            params: []
-          };
-          token = tokens[++current];
+      //     let node = {
+      //       type: "CallExpression",
+      //       name: token.value,
+      //       params: []
+      //     };
+      //     token = tokens[++current];
 
-          while (
-            token.type !== TokenType.PAREN ||
-            (token.type === TokenType.PAREN && token.value !== ")") ||
-            token.type === TokenType.END
-          ) {
-            node.params.push(walk());
-            token = tokens[current];
-          }
+      //     while (
+      //       token.type !== TokenType.PAREN ||
+      //       (token.type === TokenType.PAREN && token.value !== ")") ||
+      //       token.type === TokenType.END
+      //     ) {
+      //       node.params.push(walk());
+      //       token = tokens[current];
+      //     }
 
-          current++;
+      //     current++;
 
-          return node;
-        }
+      //     return node;
+      //   }
 
       case TokenType.END:
+      case TokenType.START_BRACE:
+      case TokenType.END_BRACE:
+      case TokenType.PAREN:
         current++;
         return;
     }

@@ -27,7 +27,11 @@ export default function traverser(ast, visitor) {
       case "Variable":
         traverseArray(node.value, node);
         break;
-      
+
+      case "Function":
+        traverseArray(node.body, node);
+        break;
+
       case "ElseStatement":
       case "IfStatement":
         traverseArray(node.body, node);
@@ -43,7 +47,7 @@ export default function traverser(ast, visitor) {
         break;
 
       default:
-        throw new TypeError(node + " is invalid in traverser");
+        throw new TypeError(node.type + " is invalid in traverser");
     }
 
     if (methods && methods.exit) {
