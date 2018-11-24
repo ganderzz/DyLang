@@ -12,7 +12,7 @@ This is an ever growing project as I dive into how compilers work.
 
 ### Syntax
 
-```
+```go
 /*
   Multi
   Line

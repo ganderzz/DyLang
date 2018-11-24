@@ -3,8 +3,6 @@ function getNodeType(type: { type: string; value: any }) {
     throw new Error(`Could not find the type of ${type.type} (${type.value})`);
   }
 
-  console.log(type);
-
   switch (type.type) {
     case "StringLiteral":
       return "std::string";

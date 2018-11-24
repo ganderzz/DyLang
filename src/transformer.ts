@@ -11,46 +11,31 @@ export default function transformer(ast) {
   traverser(ast, {
     NumberLiteral: {
       enter(node, parent) {
-        parent._context.push({
-          type: "NumberLiteral",
-          value: node.value
-        });
+        parent._context.push(node);
       }
     },
 
     DecimalLiteral: {
       enter(node, parent) {
-        parent._context.push({
-          type: "DecimalLiteral",
-          value: node.value
-        });
+        parent._context.push(node);
       }
     },
 
     StringLiteral: {
       enter(node, parent) {
-        parent._context.push({
-          type: "StringLiteral",
-          value: node.value
-        });
+        parent._context.push(node);
       }
     },
 
     Operator: {
       enter(node, parent) {
-        parent._context.push({
-          type: "Operator",
-          value: node.value
-        });
+        parent._context.push(node);
       }
     },
 
     Identifier: {
       enter(node, parent) {
-        parent._context.push({
-          type: "Identifier",
-          value: node.value
-        });
+        parent._context.push(node);
       }
     },
 
@@ -100,15 +85,9 @@ export default function transformer(ast) {
 
     Function: {
       enter(node, parent) {
-        let expression = {
-          type: "Function",
-          name: node.name,
-          body: node.body
-        };
-
         node._context = [];
 
-        parent._context.push(expression);
+        parent._context.push(node);
       }
     },
 

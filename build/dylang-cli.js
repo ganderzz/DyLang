@@ -57,7 +57,6 @@ function getNodeType(type) {
     if (!type) {
         throw new Error("Could not find the type of " + type.type + " (" + type.value + ")");
     }
-    console.log(type);
     switch (type.type) {
         case "StringLiteral":
             return "std::string";
@@ -207,16 +206,24 @@ function parser(tokens) {
                 var fnode = {
                     type: "Function",
                     name: tokens[current],
+                    arguments: [],
                     body: []
                 };
-                var braceCount = 1;
+                current++;
                 while (tokens[current].type !== TokenType.START_BRACE) {
                     if (!tokens[current]) {
                         throw new Error("Could not find the start of the function");
                     }
-                    current++;
+                    if (tokens[current].type === TokenType.PAREN_START) {
+                        current++;
+                        fnode.arguments.push(walk());
+                    }
+                    else {
+                        current++;
+                    }
                 }
                 current++;
+                var braceCount = 1;
                 while (tokens[current] && braceCount > 0) {
                     if (tokens[current].type === TokenType.END_BRACE) {
                         braceCount--;
@@ -396,42 +403,27 @@ function transformer(ast) {
     traverser(ast, {
         NumberLiteral: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "NumberLiteral",
-                    value: node.value
-                });
+                parent._context.push(node);
             }
         },
         DecimalLiteral: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "DecimalLiteral",
-                    value: node.value
-                });
+                parent._context.push(node);
             }
         },
         StringLiteral: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "StringLiteral",
-                    value: node.value
-                });
+                parent._context.push(node);
             }
         },
         Operator: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "Operator",
-                    value: node.value
-                });
+                parent._context.push(node);
             }
         },
         Identifier: {
             enter: function (node, parent) {
-                parent._context.push({
-                    type: "Identifier",
-                    value: node.value
-                });
+                parent._context.push(node);
             }
         },
         Separator: {
@@ -473,13 +465,8 @@ function transformer(ast) {
         },
         Function: {
             enter: function (node, parent) {
-                var expression = {
-                    type: "Function",
-                    name: node.name,
-                    body: node.body
-                };
                 node._context = [];
-                parent._context.push(expression);
+                parent._context.push(node);
             }
         },
         IfStatement: {

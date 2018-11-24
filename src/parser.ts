@@ -64,19 +64,27 @@ export default function parser(tokens) {
         let fnode = {
           type: "Function",
           name: tokens[current],
+          arguments: [],
           body: []
         };
 
-        let braceCount = 1;
+        current++;
 
         while (tokens[current].type !== TokenType.START_BRACE) {
           if (!tokens[current]) {
             throw new Error("Could not find the start of the function");
           }
 
-          current++;
+          if (tokens[current].type === TokenType.PAREN_START) {
+            current++;
+            fnode.arguments.push(walk());
+          } else {
+            current++;
+          }
         }
+
         current++;
+        let braceCount = 1;
 
         while (tokens[current] && braceCount > 0) {
           if (tokens[current].type === TokenType.END_BRACE) {
