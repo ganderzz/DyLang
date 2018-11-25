@@ -1,17 +1,15 @@
 language: node_js
 node_js:
-- '7'
-- '6'
+  - "7"
+  - "6"
 cache:
   directories:
-  - node_modules
+    - node_modules
 before_install:
-- openssl aes-256-cbc -K $encrypted_d1d5f850c97f_key -iv $encrypted_d1d5f850c97f_iv
-  -in deploy-key.enc -out ../deploy-key -d
+  - openssl aes-256-cbc -K $encrypted_d1d5f850c97f_key -iv $encrypted_d1d5f850c97f_iv
+    -in deploy-key.enc -out ../deploy-key -d
 install:
-- npm install
-script:
-- npm test
+  - npm install
 deploy:
   provider: script
   skip_cleanup: true
