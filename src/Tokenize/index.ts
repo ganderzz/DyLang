@@ -66,7 +66,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (lookAhead(":", currentRow)) {
+      if (currentElement === ":") {
         current++;
 
         let type = "";
@@ -75,6 +75,9 @@ export function tokenize(input: string) {
         }
 
         while (!/\s/.test(rows[i][current])) {
+          if (rows[i][current] === "{") {
+            break;
+          }
           type += rows[i][current++];
         }
 
@@ -340,6 +343,7 @@ export function tokenize(input: string) {
 
         continue;
       }
+      console.log(rows[i][current], current, rows[i]);
 
       throw new TypeError(
         "Invalid symbol " +
@@ -347,7 +351,9 @@ export function tokenize(input: string) {
           " given on line " +
           (i + 1) +
           ":" +
-          current
+          current +
+          " around " +
+          rows[i]
       );
     }
 

@@ -589,6 +589,9 @@ function tokenize(input) {
                     current++;
                 }
                 while (!/\s/.test(rows[i][current])) {
+                    if (rows[i][current] === "{") {
+                        break;
+                    }
                     type += rows[i][current++];
                 }
                 tokens.push({
@@ -749,6 +752,7 @@ function tokenize(input) {
                     type: TokenType.PAREN_END,
                     value: currentElement
                 });
+                console.log(rows[i][current]);
                 continue;
             }
             var characters = /[a-z\.]/i;
@@ -790,12 +794,15 @@ function tokenize(input) {
                 });
                 continue;
             }
+            console.log(rows[i][current], current, rows[i]);
             throw new TypeError("Invalid symbol " +
                 rows[i][current] +
                 " given on line " +
                 (i + 1) +
                 ":" +
-                current);
+                current +
+                " around " +
+                rows[i]);
         }
         if (tokens.length > 0) {
             tokens.push({

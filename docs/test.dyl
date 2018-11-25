@@ -8,7 +8,7 @@ fn noMatch(): string {
     return "DOESN\"T MATCH"
 }
 
-fn add(): int {
+fn add() {
     let a = 1
     return a
 }
