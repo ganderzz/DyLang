@@ -4,16 +4,16 @@
     Comment
 */
 
-fn noMatch() {
+fn noMatch(): string {
     return 'DOESNT MATCH'
 }
 
-fn add() {
+fn add(): int {
     let a = 5
     return a
 }
 
-fn main() {
+fn main(): int {
     string a = 'test'
     int b = 2
 

@@ -16,5 +16,6 @@ export enum TokenType {
   ELSE,
   SEPARATOR,
   FUNCTION_DECLARATION,
-  RETURN
+  RETURN,
+  TYPE_DECLARATION
 }

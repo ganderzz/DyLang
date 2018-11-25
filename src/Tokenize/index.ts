@@ -66,6 +66,26 @@ export function tokenize(input: string) {
         continue;
       }
 
+      if (lookAhead(":", currentRow)) {
+        current++;
+
+        let type = "";
+        if (/\s/.test(rows[i][current])) {
+          current++;
+        }
+
+        while (!/\s/.test(rows[i][current])) {
+          type += rows[i][current++];
+        }
+
+        tokens.push({
+          type: TokenType.TYPE_DECLARATION,
+          value: type.length === 0 ? "auto" : type
+        });
+
+        continue;
+      }
+
       if (/[0-9]/.test(currentElement)) {
         let value = rows[i][current];
 

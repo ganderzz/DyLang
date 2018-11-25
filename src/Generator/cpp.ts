@@ -5,12 +5,15 @@ function getNodeType(type: { type: string; value: any }) {
 
   switch (type.type) {
     case "StringLiteral":
+    case "string":
       return "std::string";
 
     case "DecimalLiteral":
+    case "decimal":
       return "float";
 
     case "NumberLiteral":
+    case "int":
       return "int";
 
     default:
@@ -61,7 +64,8 @@ export default function cppGenerator(node, includeSemiColon = true) {
       return name;
 
     case "Function":
-      const returnType = getReturnType(node);
+      const returnType = getNodeType({ type: node.returnType, value: "" });
+
       return `${returnType} ${node.name.value}() {${node.body
         .map(cppGenerator)
         .join(" ")}}`;

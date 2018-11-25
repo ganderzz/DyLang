@@ -65,7 +65,8 @@ export default function parser(tokens) {
           type: "Function",
           name: tokens[current],
           arguments: [],
-          body: []
+          body: [],
+          returnType: "auto"
         };
 
         current++;
@@ -78,6 +79,9 @@ export default function parser(tokens) {
           if (tokens[current].type === TokenType.PAREN_START) {
             current++;
             fnode.arguments.push(walk());
+          } else if (tokens[current].type === TokenType.TYPE_DECLARATION) {
+            fnode.returnType = tokens[current].value;
+            current++;
           } else {
             current++;
           }

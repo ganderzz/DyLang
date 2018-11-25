@@ -59,23 +59,17 @@ function getNodeType(type) {
     }
     switch (type.type) {
         case "StringLiteral":
+        case "string":
             return "std::string";
         case "DecimalLiteral":
+        case "decimal":
             return "float";
         case "NumberLiteral":
+        case "int":
             return "int";
         default:
             return "auto";
     }
-}
-function getReturnType(node) {
-    if (node && node.body) {
-        var returnNode = node.body.filter(function (p) { return p.type === "Return"; })[0];
-        if (returnNode) {
-            return getNodeType(returnNode.value[0]);
-        }
-    }
-    return "void";
 }
 var stl = "void print(std::string args) { std::cout << args << std::endl; }";
 function cppGenerator(node, includeSemiColon) {
@@ -100,7 +94,7 @@ function cppGenerator(node, includeSemiColon) {
             }
             return name;
         case "Function":
-            var returnType = getReturnType(node);
+            var returnType = getNodeType({ type: node.returnType, value: "" });
             return returnType + " " + node.name.value + "() {" + node.body
                 .map(cppGenerator)
                 .join(" ") + "}";
@@ -152,6 +146,7 @@ var TokenType;
     TokenType[TokenType["SEPARATOR"] = 15] = "SEPARATOR";
     TokenType[TokenType["FUNCTION_DECLARATION"] = 16] = "FUNCTION_DECLARATION";
     TokenType[TokenType["RETURN"] = 17] = "RETURN";
+    TokenType[TokenType["TYPE_DECLARATION"] = 18] = "TYPE_DECLARATION";
 })(TokenType || (TokenType = {}));
 
 function parser(tokens) {
@@ -207,7 +202,8 @@ function parser(tokens) {
                     type: "Function",
                     name: tokens[current],
                     arguments: [],
-                    body: []
+                    body: [],
+                    returnType: "auto"
                 };
                 current++;
                 while (tokens[current].type !== TokenType.START_BRACE) {
@@ -217,6 +213,10 @@ function parser(tokens) {
                     if (tokens[current].type === TokenType.PAREN_START) {
                         current++;
                         fnode.arguments.push(walk());
+                    }
+                    else if (tokens[current].type === TokenType.TYPE_DECLARATION) {
+                        fnode.returnType = tokens[current].value;
+                        current++;
                     }
                     else {
                         current++;
@@ -579,6 +579,21 @@ function tokenize(input) {
                 current += 6;
                 tokens.push({
                     type: TokenType.RETURN
+                });
+                continue;
+            }
+            if (lookAhead(":", currentRow)) {
+                current++;
+                var type = "";
+                if (/\s/.test(rows[i][current])) {
+                    current++;
+                }
+                while (!/\s/.test(rows[i][current])) {
+                    type += rows[i][current++];
+                }
+                tokens.push({
+                    type: TokenType.TYPE_DECLARATION,
+                    value: type.length === 0 ? "auto" : type
                 });
                 continue;
             }
