@@ -703,13 +703,25 @@ function tokenize(input) {
                 });
                 continue;
             }
-            if (currentElement === "'") {
+            if (currentElement === '"') {
                 var value = "";
-                while (rows[i][++current] !== "'") {
-                    if (current >= colLength) {
-                        throw new SyntaxError("Expecting a closing ' on line " + (i + 1) + ":" + current);
+                var quoteCount = 1;
+                current++;
+                while (quoteCount > 0) {
+                    if (current > colLength) {
+                        throw new SyntaxError("Expecting a closing ' on line " +
+                            (i + 1) +
+                            ":" +
+                            current +
+                            " near " +
+                            rows[i]);
                     }
-                    value += rows[i][current];
+                    if (rows[i][current] === '"' && rows[i][current - 1] !== "\\") {
+                        quoteCount--;
+                    }
+                    else {
+                        value += rows[i][current++];
+                    }
                 }
                 current++;
                 tokens.push({

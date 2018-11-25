@@ -228,17 +228,28 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === "'") {
+      if (currentElement === '"') {
         let value = "";
+        let quoteCount = 1;
+        current++;
 
-        while (rows[i][++current] !== "'") {
-          if (current >= colLength) {
+        while (quoteCount > 0) {
+          if (current > colLength) {
             throw new SyntaxError(
-              "Expecting a closing ' on line " + (i + 1) + ":" + current
+              "Expecting a closing ' on line " +
+                (i + 1) +
+                ":" +
+                current +
+                " near " +
+                rows[i]
             );
           }
 
-          value += rows[i][current];
+          if (rows[i][current] === '"' && rows[i][current - 1] !== "\\") {
+            quoteCount--;
+          } else {
+            value += rows[i][current++];
+          }
         }
         current++;
 

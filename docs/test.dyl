@@ -5,17 +5,17 @@
 */
 
 fn noMatch(): string {
-    return 'DOESNT MATCH'
+    return "DOESN\"T MATCH"
 }
 
 fn add(): int {
-    let a = 5
+    let a = 1
     return a
 }
 
 fn main(): int {
-    string a = 'test'
-    int b = 2
+    let a = "test"
+    let b = 2
 
     // Check if true
     if b < add() {
