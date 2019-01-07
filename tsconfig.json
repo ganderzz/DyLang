@@ -3,7 +3,18 @@
     "moduleResolution": "node",
     "target": "es5",
     "module": "es2015",
+    "allowJs": true,
+    "jsx": "react",
+
+    "strict": true,
+
+    "types": ["jest"],
     "allowSyntheticDefaultImports": true,
-    "importHelpers": true
+
+    "experimentalDecorators": true,
+    "alwaysStrict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "pretty": true
   }
 }

@@ -11,6 +11,6 @@ export function handleSqwiggleStartBrace({
         type: TokenType.START_BRACE
       }
     ],
-    cursor: cursor + 1
+    cursor: cursor! + 1
   };
 }

@@ -75,7 +75,7 @@ export function tokenize(input: string) {
         }
 
         while (!/\s/.test(rows[i][current])) {
-          if (rows[i][current] === "{") {
+          if (rows[i][current] === "{" || rows[i][current] === ",") {
             break;
           }
           type += rows[i][current++];
@@ -130,8 +130,8 @@ export function tokenize(input: string) {
           cursor: current
         });
 
-        t.forEach(p => tokens.push(p));
-        current = cursor;
+        t!.forEach(p => tokens.push(p));
+        current = cursor!;
         continue;
       }
 
@@ -150,8 +150,8 @@ export function tokenize(input: string) {
           cursor: current
         });
 
-        t.forEach(p => tokens.push(p));
-        current = cursor;
+        t!.forEach(p => tokens.push(p));
+        current = cursor!;
         continue;
       }
 

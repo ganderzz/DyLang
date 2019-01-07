@@ -5,12 +5,11 @@
 */
 
 fn noMatch(): string {
-    return "DOESN\"T MATCH"
+    return "DOESN'T MATCH"
 }
 
-fn add() {
-    let a = 1
-    return a
+fn add(one: int, two: int): int {
+    return one + two
 }
 
 fn main(): int {
@@ -24,6 +23,5 @@ fn main(): int {
         print(noMatch())
     }
 
-    /* This function figures out it's type by the return value */
     return 0
 }

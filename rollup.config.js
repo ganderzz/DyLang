@@ -15,7 +15,7 @@ export default [
         jsnext: true,
         extensions: ["js", "ts"]
       }),
-      typescript({ typescript: require("typescript") }),
+      typescript({ lib: ["es5", "es6"], typescript: require("typescript") }),
       babel({
         exclude: "node_modules/**"
       })
@@ -33,7 +33,7 @@ export default [
         jsnext: true,
         extensions: ["js", "ts"]
       }),
-      typescript({ typescript: require("typescript") }),
+      typescript({ lib: ["es5", "es6"], typescript: require("typescript") }),
       babel({
         exclude: "node_modules/**"
       })

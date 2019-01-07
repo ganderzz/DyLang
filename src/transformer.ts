@@ -128,7 +128,7 @@ export default function transformer(ast) {
           },
           arguments: [],
           expression: null
-        } as any;
+        };
 
         node._context = expression.arguments;
 
