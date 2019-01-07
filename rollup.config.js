@@ -6,8 +6,12 @@ const packageVersion = require("./package.json").version || "";
 
 export default [
   {
-    entry: "src/index.ts",
-    format: "umd",
+    input: "src/index.ts",
+    output: {
+      name: "dylang",
+      format: "umd",
+      output: "./docs/dylang.js"
+    },
     banner: "/* @dylang " + packageVersion + " */",
     plugins: [
       resolve({
@@ -15,17 +19,19 @@ export default [
         jsnext: true,
         extensions: ["js", "ts"]
       }),
-      typescript({ lib: ["es5", "es6"], typescript: require("typescript") }),
+      typescript({ tslib: require("tslib") }),
       babel({
         exclude: "node_modules/**"
       })
-    ],
-    moduleName: "dylang",
-    dest: "./docs/dylang.js"
+    ]
   },
   {
-    entry: "src/cli.ts",
-    format: "cjs",
+    input: "src/cli.ts",
+    output: {
+      name: "dylang",
+      format: "umd",
+      file: "./build/dylang-cli.js"
+    },
     banner: "/* @dylang " + packageVersion + " */",
     plugins: [
       resolve({
@@ -33,12 +39,10 @@ export default [
         jsnext: true,
         extensions: ["js", "ts"]
       }),
-      typescript({ lib: ["es5", "es6"], typescript: require("typescript") }),
+      typescript({ tslib: require("tslib") }),
       babel({
         exclude: "node_modules/**"
       })
-    ],
-    moduleName: "dylang",
-    dest: "./build/dylang-cli.js"
+    ]
   }
 ];
