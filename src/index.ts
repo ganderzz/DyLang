@@ -1,4 +1,4 @@
-import { javaScriptGenerator, cppGenerator } from "./generator";
+import { javaScriptGenerator, cppGenerator } from "./Generator";
 import parser from "./parser";
 import transformer from "./transformer";
 import { tokenize } from "./Tokenize";
