@@ -677,7 +677,6 @@
                       variableType += rows[i][current];
                       current++;
                   }
-                  console.log(rows[i][current]);
                   // Skip 4 to ignore spacing
                   current++;
                   while (current < colLength && /[a-z]/i.test(rows[i][current])) {
