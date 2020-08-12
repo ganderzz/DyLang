@@ -60,7 +60,7 @@ export function tokenize(input: string) {
         current += 6;
 
         tokens.push({
-          type: TokenType.RETURN
+          type: TokenType.RETURN,
         });
 
         continue;
@@ -83,7 +83,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.TYPE_DECLARATION,
-          value: type.length === 0 ? "auto" : type
+          value: type.length === 0 ? "auto" : type,
         });
 
         continue;
@@ -110,7 +110,7 @@ export function tokenize(input: string) {
 
           tokens.push({
             type: TokenType.DECIMAL,
-            value: parseFloat(value)
+            value: parseFloat(value),
           });
 
           continue;
@@ -119,7 +119,7 @@ export function tokenize(input: string) {
         // If not decimal, add it as an int
         tokens.push({
           type: TokenType.NUMBER,
-          value: parseInt(value, 10)
+          value: parseInt(value, 10),
         });
 
         continue;
@@ -127,10 +127,10 @@ export function tokenize(input: string) {
 
       if (currentElement === "{") {
         const { tokens: t, cursor } = handleSqwiggleStartBrace({
-          cursor: current
+          cursor: current,
         });
 
-        t!.forEach(p => tokens.push(p));
+        t!.forEach((p) => tokens.push(p));
         current = cursor!;
         continue;
       }
@@ -139,7 +139,7 @@ export function tokenize(input: string) {
         current++;
 
         tokens.push({
-          type: TokenType.END_BRACE
+          type: TokenType.END_BRACE,
         });
 
         continue;
@@ -147,10 +147,10 @@ export function tokenize(input: string) {
 
       if (lookAhead("fn", currentRow)) {
         const { tokens: t, cursor } = handleFunctionDeclaration({
-          cursor: current
+          cursor: current,
         });
 
-        t!.forEach(p => tokens.push(p));
+        t!.forEach((p) => tokens.push(p));
         current = cursor!;
         continue;
       }
@@ -159,7 +159,7 @@ export function tokenize(input: string) {
         current += 2;
 
         tokens.push({
-          type: TokenType.IF
+          type: TokenType.IF,
         });
 
         continue;
@@ -169,7 +169,7 @@ export function tokenize(input: string) {
         current += 4;
 
         tokens.push({
-          type: TokenType.ELSE
+          type: TokenType.ELSE,
         });
 
         continue;
@@ -205,7 +205,7 @@ export function tokenize(input: string) {
         tokens.push({
           type: TokenType.VARIABLE,
           valueType: variableType,
-          value: variableName
+          value: variableName,
         });
 
         continue;
@@ -217,7 +217,7 @@ export function tokenize(input: string) {
 
           tokens.push({
             type: TokenType.OPERATOR,
-            value: "=="
+            value: "==",
           });
           continue;
         }
@@ -225,7 +225,7 @@ export function tokenize(input: string) {
         current++;
 
         tokens.push({
-          type: TokenType.ASSIGNMENT
+          type: TokenType.ASSIGNMENT,
         });
 
         continue;
@@ -258,7 +258,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.STRING,
-          value: value
+          value: value,
         });
 
         continue;
@@ -270,7 +270,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.PAREN_START,
-          value: currentElement
+          value: currentElement,
         });
 
         continue;
@@ -286,7 +286,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.PAREN_END,
-          value: currentElement
+          value: currentElement,
         });
 
         continue;
@@ -304,7 +304,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.IDENTIFIER,
-          value: value
+          value: value,
         });
 
         continue;
@@ -320,7 +320,7 @@ export function tokenize(input: string) {
 
           tokens.push({
             type: TokenType.OPERATOR,
-            value: `${operator[0]}=`
+            value: `${operator[0]}=`,
           });
 
           continue;
@@ -328,7 +328,7 @@ export function tokenize(input: string) {
 
         tokens.push({
           type: TokenType.OPERATOR,
-          value: currentElement
+          value: currentElement,
         });
 
         continue;
@@ -338,7 +338,7 @@ export function tokenize(input: string) {
         current++;
 
         tokens.push({
-          type: TokenType.SEPARATOR
+          type: TokenType.SEPARATOR,
         });
 
         continue;
@@ -359,7 +359,7 @@ export function tokenize(input: string) {
 
     if (tokens.length > 0) {
       tokens.push({
-        type: TokenType.END
+        type: TokenType.END,
       });
     }
   }

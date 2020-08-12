@@ -580,7 +580,7 @@
               if (lookAhead("return", currentRow)) {
                   current += 6;
                   tokens.push({
-                      type: TokenType.RETURN
+                      type: TokenType.RETURN,
                   });
                   continue;
               }
@@ -598,7 +598,7 @@
                   }
                   tokens.push({
                       type: TokenType.TYPE_DECLARATION,
-                      value: type.length === 0 ? "auto" : type
+                      value: type.length === 0 ? "auto" : type,
                   });
                   continue;
               }
@@ -619,20 +619,20 @@
                       }
                       tokens.push({
                           type: TokenType.DECIMAL,
-                          value: parseFloat(value)
+                          value: parseFloat(value),
                       });
                       continue;
                   }
                   // If not decimal, add it as an int
                   tokens.push({
                       type: TokenType.NUMBER,
-                      value: parseInt(value, 10)
+                      value: parseInt(value, 10),
                   });
                   continue;
               }
               if (currentElement === "{") {
                   var _a = handleSqwiggleStartBrace({
-                      cursor: current
+                      cursor: current,
                   }), t = _a.tokens, cursor = _a.cursor;
                   t.forEach(function (p) { return tokens.push(p); });
                   current = cursor;
@@ -641,13 +641,13 @@
               if (currentElement === "}") {
                   current++;
                   tokens.push({
-                      type: TokenType.END_BRACE
+                      type: TokenType.END_BRACE,
                   });
                   continue;
               }
               if (lookAhead("fn", currentRow)) {
                   var _b = handleFunctionDeclaration({
-                      cursor: current
+                      cursor: current,
                   }), t = _b.tokens, cursor = _b.cursor;
                   t.forEach(function (p) { return tokens.push(p); });
                   current = cursor;
@@ -656,14 +656,14 @@
               if (lookAhead("if", currentRow)) {
                   current += 2;
                   tokens.push({
-                      type: TokenType.IF
+                      type: TokenType.IF,
                   });
                   continue;
               }
               if (lookAhead("else", currentRow)) {
                   current += 4;
                   tokens.push({
-                      type: TokenType.ELSE
+                      type: TokenType.ELSE,
                   });
                   continue;
               }
@@ -677,6 +677,7 @@
                       variableType += rows[i][current];
                       current++;
                   }
+                  console.log(rows[i][current]);
                   // Skip 4 to ignore spacing
                   current++;
                   while (current < colLength && /[a-z]/i.test(rows[i][current])) {
@@ -689,7 +690,7 @@
                   tokens.push({
                       type: TokenType.VARIABLE,
                       valueType: variableType,
-                      value: variableName
+                      value: variableName,
                   });
                   continue;
               }
@@ -698,13 +699,13 @@
                       current += 2;
                       tokens.push({
                           type: TokenType.OPERATOR,
-                          value: "=="
+                          value: "==",
                       });
                       continue;
                   }
                   current++;
                   tokens.push({
-                      type: TokenType.ASSIGNMENT
+                      type: TokenType.ASSIGNMENT,
                   });
                   continue;
               }
@@ -731,7 +732,7 @@
                   current++;
                   tokens.push({
                       type: TokenType.STRING,
-                      value: value
+                      value: value,
                   });
                   continue;
               }
@@ -740,7 +741,7 @@
                   parenCount++;
                   tokens.push({
                       type: TokenType.PAREN_START,
-                      value: currentElement
+                      value: currentElement,
                   });
                   continue;
               }
@@ -752,7 +753,7 @@
                   parenCount--;
                   tokens.push({
                       type: TokenType.PAREN_END,
-                      value: currentElement
+                      value: currentElement,
                   });
                   continue;
               }
@@ -766,7 +767,7 @@
                   }
                   tokens.push({
                       type: TokenType.IDENTIFIER,
-                      value: value
+                      value: value,
                   });
                   continue;
               }
@@ -778,20 +779,20 @@
                       current++;
                       tokens.push({
                           type: TokenType.OPERATOR,
-                          value: operator[0] + "="
+                          value: operator[0] + "=",
                       });
                       continue;
                   }
                   tokens.push({
                       type: TokenType.OPERATOR,
-                      value: currentElement
+                      value: currentElement,
                   });
                   continue;
               }
               if (currentElement.match(",")) {
                   current++;
                   tokens.push({
-                      type: TokenType.SEPARATOR
+                      type: TokenType.SEPARATOR,
                   });
                   continue;
               }
@@ -807,7 +808,7 @@
           }
           if (tokens.length > 0) {
               tokens.push({
-                  type: TokenType.END
+                  type: TokenType.END,
               });
           }
       }
