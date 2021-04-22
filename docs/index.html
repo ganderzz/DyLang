@@ -77,7 +77,10 @@ console.log(evaluate())
 
         <span class="label secondary">Generated</span>
 
-        <div id="generated__result" style="overflow-y: auto; max-height: 50vh; font-size: 12px"></div>
+        <div
+          id="generated__result"
+          style="overflow-y: auto; max-height: 50vh; font-size: 12px"
+        ></div>
       </div>
     </div>
 
@@ -125,11 +128,12 @@ console.log(evaluate())
             throw exception;
           }
 
-          document.querySelector(".elapsed").innerHTML = "(" + (performance.now() - start) + "ms)";
+          document.querySelector(".elapsed").innerHTML =
+            "(" + (performance.now() - start) + "ms)";
         });
       };
     </script>
 
-    <script src="index.js"></script>
+    <script src="https://raw.githubusercontent.com/ganderzz/DyLang/gh-pages/index.js"></script>
   </body>
 </html>
