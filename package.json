@@ -6,7 +6,6 @@
   "scripts": {
     "build": "esbuild src/index.ts --bundle --format=iife --global-name=dylang --outdir=build",
     "build:prod": "esbuild src/index.ts --minify --bundle --format=iife --global-name=dylang --outdir=build",
-    "build:watch": "./node_modules/.bin/rollup -c --watch",
     "test": "jest"
   },
   "repository": {
