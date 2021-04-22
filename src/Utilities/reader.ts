@@ -43,73 +43,25 @@ function tokenizePattern(type, pattern) {
 }
 
 const tokenFunctions = [
-  function skipDeadSpace() {
-    return (input, index) => {
-      if (/\s/.test(input[index])) {
-        return { consumed: 1, token: null };
-      }
+  function skipWhitespace(input, index) {
+    if (/\s/.test(input[index])) {
+      return { consumed: 1, token: null };
+    }
 
-      if (input[index] === "/") {
-        let consumed = 1;
-        let isMultiline = input[index + consumed] === "*";
-
-        if (!isMultiline && input[index + consumed] !== "/") {
-          throw new TypeError("Invalid start of a comment.");
-        }
-
-        consumed++;
-        while (index + consumed < input.length) {
-          consumed++;
-
-          if (!isMultiline && input[index + consumed] === "\n") {
-            break;
-          }
-
-          if (isMultiline && input[index + consumed] === "*" && input[index + consumed + 1] === "/") {
-            consumed += 2;
-            break;
-          }
-        }
-
-        return {
-          consumed,
-          token: null,
-        };
-      }
-
-      return {
-        token: null,
-        consumed: 0,
-      };
+    return {
+      token: null,
+      consumed: 0,
     };
   },
-  function parseLeftParen() {
-    return tokenizeCharacter(TokenType.PAREN_START, "(");
-  },
-  function parseRightParen() {
-    return tokenizeCharacter(TokenType.PAREN_END, ")");
-  },
-  function parseLeftBrace() {
-    return tokenizeCharacter(TokenType.BRACE_START, "{");
-  },
-  function parseRightBrace() {
-    return tokenizeCharacter(TokenType.BRACE_END, "}");
-  },
-  function parseEquals() {
-    return tokenizeCharacter(TokenType.ASSIGNMENT, "=");
-  },
-  function parseIf() {
-    return tokenizePattern(TokenType.IF, /(if)/i);
-  },
-  function parseIdentifier() {
-    return tokenizePattern(TokenType.IDENTIFIER, /[a-z]/i);
-  },
-  function parseOperator() {
-    return tokenizePattern(TokenType.OPERATOR, /[+-/*]/i);
-  },
-  function parseNumber() {
-    return tokenizePattern(TokenType.NUMBER, /[0-9.]/i);
-  },
+  tokenizeCharacter(TokenType.PAREN_START, "("),
+  tokenizeCharacter(TokenType.PAREN_END, ")"),
+  tokenizeCharacter(TokenType.BRACE_START, "{"),
+  tokenizeCharacter(TokenType.BRACE_END, "}"),
+  tokenizeCharacter(TokenType.ASSIGNMENT, "="),
+  tokenizePattern(TokenType.IF, /(if)/i),
+  tokenizePattern(TokenType.IDENTIFIER, /[a-z]/i),
+  tokenizePattern(TokenType.OPERATOR, /[+-/*]/i),
+  tokenizePattern(TokenType.NUMBER, /[0-9.]/i),
 ];
 
 export function tokenizer(input: string): IToken<any>[] {
@@ -124,9 +76,7 @@ export function tokenizer(input: string): IToken<any>[] {
         break;
       }
 
-      const fn = tokenFunctions[i]();
-
-      const { consumed, token } = fn(input, index);
+      const { consumed, token } = tokenFunctions[i](input, index);
 
       if (consumed !== 0) {
         tokenized = true;
