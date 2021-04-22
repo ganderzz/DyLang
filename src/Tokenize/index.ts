@@ -2,6 +2,7 @@ import { TokenType } from "../Enums/Token";
 import { handleSqwiggleStartBrace } from "./Functions/sqwiggleStartBrace";
 import { IToken } from "../Interfaces/IToken";
 import { handleFunctionDeclaration } from "./Functions/functionDeclaration";
+import { Syntax } from "../Enums/Syntax";
 
 function lookAhead(needle, row) {
   for (let i = 0; row[i] !== " " && i < row.length; i++) {
@@ -31,21 +32,17 @@ export function tokenize(input: string) {
       if (isComment && currentElement !== "*") {
         current++;
         continue;
-      } else if (
-        isComment &&
-        currentElement === "*" &&
-        rows[i][current + 1] === "/"
-      ) {
+      } else if (isComment && currentElement === "*" && rows[i][current + 1] === Syntax.forwardSlash) {
         isComment = false;
         current += 2;
         continue;
       }
 
-      if (currentElement === "/" && rows[i][current + 1] === "/") {
+      if (currentElement === Syntax.forwardSlash && rows[i][current + 1] === Syntax.forwardSlash) {
         break;
       }
 
-      if (currentElement === "/" && rows[i][current + 1] === "*") {
+      if (currentElement === Syntax.forwardSlash && rows[i][current + 1] === "*") {
         current += 2;
         isComment = true;
         continue;
@@ -56,7 +53,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (lookAhead("return", currentRow)) {
+      if (lookAhead(Syntax.return, currentRow)) {
         current += 6;
 
         tokens.push({
@@ -66,7 +63,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === ":") {
+      if (currentElement === Syntax.colon) {
         current++;
 
         let type = "";
@@ -125,7 +122,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === "{") {
+      if (currentElement === Syntax.rightBace) {
         const { tokens: t, cursor } = handleSqwiggleStartBrace({
           cursor: current,
         });
@@ -135,17 +132,17 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === "}") {
+      if (currentElement === Syntax.leftBrace) {
         current++;
 
         tokens.push({
-          type: TokenType.END_BRACE,
+          type: TokenType.BRACE_END,
         });
 
         continue;
       }
 
-      if (lookAhead("fn", currentRow)) {
+      if (lookAhead(Syntax.function, currentRow)) {
         const { tokens: t, cursor } = handleFunctionDeclaration({
           cursor: current,
         });
@@ -155,7 +152,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (lookAhead("if", currentRow)) {
+      if (lookAhead(Syntax.if, currentRow)) {
         current += 2;
 
         tokens.push({
@@ -165,7 +162,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (lookAhead("else", currentRow)) {
+      if (lookAhead(Syntax.else, currentRow)) {
         current += 4;
 
         tokens.push({
@@ -176,10 +173,10 @@ export function tokenize(input: string) {
       }
 
       if (
-        lookAhead("int", currentRow) ||
-        lookAhead("decimal", currentRow) ||
-        lookAhead("string", currentRow) ||
-        lookAhead("let", currentRow)
+        lookAhead(Syntax.int, currentRow) ||
+        lookAhead(Syntax.decimal, currentRow) ||
+        lookAhead(Syntax.string, currentRow) ||
+        lookAhead(Syntax.variable, currentRow)
       ) {
         let variableType = "";
         let variableName = "";
@@ -197,9 +194,7 @@ export function tokenize(input: string) {
         }
 
         if (!variableName) {
-          throw new Error(
-            "Undeclared variable being used on line " + (i + 1) + ":" + current
-          );
+          throw new Error("Undeclared variable being used on line " + (i + 1) + ":" + current);
         }
 
         tokens.push({
@@ -211,8 +206,8 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === "=") {
-        if (rows[i][current + 1] === "=") {
+      if (currentElement === Syntax.equals) {
+        if (rows[i][current + 1] === Syntax.equals) {
           current += 2;
 
           tokens.push({
@@ -231,24 +226,17 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === '"') {
+      if (currentElement === Syntax.quote) {
         let value = "";
         let quoteCount = 1;
         current++;
 
         while (quoteCount > 0) {
           if (current > colLength) {
-            throw new SyntaxError(
-              "Expecting a closing ' on line " +
-                (i + 1) +
-                ":" +
-                current +
-                " near " +
-                rows[i]
-            );
+            throw new SyntaxError("Expecting a closing ' on line " + (i + 1) + ":" + current + " near " + rows[i]);
           }
 
-          if (rows[i][current] === '"' && rows[i][current - 1] !== "\\") {
+          if (rows[i][current] === Syntax.quote && rows[i][current - 1] !== "\\") {
             quoteCount--;
           } else {
             value += rows[i][current++];
@@ -264,7 +252,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === "(") {
+      if (currentElement === Syntax.leftParen) {
         current++;
         parenCount++;
 
@@ -276,7 +264,7 @@ export function tokenize(input: string) {
         continue;
       }
 
-      if (currentElement === ")") {
+      if (currentElement === Syntax.rightParen) {
         if (parenCount === 0) {
           throw new Error("Expecting ( on line " + (i + 1) + ":" + current);
         }
@@ -343,17 +331,9 @@ export function tokenize(input: string) {
 
         continue;
       }
-      console.log(rows[i][current], current, rows[i]);
 
       throw new TypeError(
-        "Invalid symbol " +
-          rows[i][current] +
-          " given on line " +
-          (i + 1) +
-          ":" +
-          current +
-          " around " +
-          rows[i]
+        "Invalid symbol " + rows[i][current] + " given on line " + (i + 1) + ":" + current + " around " + rows[i]
       );
     }
 

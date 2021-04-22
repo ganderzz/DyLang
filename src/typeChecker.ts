@@ -1,6 +1,6 @@
 function logError(values, elem, type, index) {
   const hint = values
-    .map(e => {
+    .map((e) => {
       if (e.value) {
         return e.value;
       }
@@ -9,14 +9,10 @@ function logError(values, elem, type, index) {
     })
     .join(" ");
 
-  return new TypeError(
-    `${elem.type} [${
-      elem.token
-    }] is being assigned to a ${type} near [${hint}]. (${index + 1}:0)`
-  );
+  return new TypeError(`${elem.type} [${elem.token}] is being assigned to a ${type} near [${hint}]. (${index + 1}:0)`);
 }
 
-export default function(tokens) {
+export default function (tokens) {
   const items = tokens.body;
   const variableTable = {};
 
@@ -33,9 +29,7 @@ export default function(tokens) {
     // If the variable exists, throw error.
     // Only allow immutable variables
     if (variableTable[token.name]) {
-      throw new Error(
-        `Immutable variable [${token.name}] reassigned. (${index + 1}:0)`
-      );
+      throw new Error(`Immutable variable [${token.name}] reassigned. (${index + 1}:0)`);
     }
     variableTable[token.name] = type;
 
@@ -47,11 +41,7 @@ export default function(tokens) {
     for (let i = 0; i < values.length; i++) {
       const elem = values[i];
 
-      if (
-        elem.type === "Operator" &&
-        elem.type === "Variable" &&
-        elem.type === "CallExpression"
-      ) {
+      if (elem.type === "Operator" && elem.type === "Variable" && elem.type === "CallExpression") {
         // We currently won't check types for these expressions
         continue;
       }
@@ -61,10 +51,7 @@ export default function(tokens) {
 
         if (identifierType !== type) {
           throw new TypeError(`
-            Variable [${
-              elem.value
-            }] of type ${type} cannot be assigned to ${identifierType}. (${index +
-            1}:0)`);
+            Variable [${elem.value}] of type ${type} cannot be assigned to ${identifierType}. (${index + 1}:0)`);
         }
         continue;
       }

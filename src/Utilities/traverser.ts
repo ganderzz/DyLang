@@ -1,6 +1,6 @@
 export default function traverser(ast, visitor) {
   function traverseArray(array, parent) {
-    array.forEach(child => {
+    array.forEach((child) => {
       traverseNode(child, parent);
     });
   }

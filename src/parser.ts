@@ -11,34 +11,34 @@ export default function parser(tokens) {
         current++;
         return {
           type: "NumberLiteral",
-          value: token.value
+          value: token.value,
         };
 
       case TokenType.DECIMAL:
         current++;
         return {
           type: "DecimalLiteral",
-          value: token.value
+          value: token.value,
         };
 
       case TokenType.STRING:
         current++;
         return {
           type: "StringLiteral",
-          value: token.value
+          value: token.value,
         };
 
       case TokenType.OPERATOR:
         current++;
         return {
           type: "Operator",
-          value: token.value
+          value: token.value,
         };
 
       case TokenType.RETURN:
         const rnode = {
           type: "Return",
-          value: []
+          value: [],
         };
         token = tokens[++current];
 
@@ -66,12 +66,12 @@ export default function parser(tokens) {
           name: tokens[current],
           arguments: [],
           body: [],
-          returnType: "auto"
+          returnType: "auto",
         };
 
         current++;
 
-        while (tokens[current].type !== TokenType.START_BRACE) {
+        while (tokens[current].type !== TokenType.BRACE_START) {
           if (!tokens[current]) {
             throw new Error("Could not find the start of the function");
           }
@@ -91,10 +91,10 @@ export default function parser(tokens) {
         let braceCount = 1;
 
         while (tokens[current] && braceCount > 0) {
-          if (tokens[current].type === TokenType.END_BRACE) {
+          if (tokens[current].type === TokenType.BRACE_END) {
             braceCount--;
             current++;
-          } else if (tokens[current].type === TokenType.START_BRACE) {
+          } else if (tokens[current].type === TokenType.BRACE_START) {
             braceCount++;
             current++;
           } else {
@@ -112,7 +112,7 @@ export default function parser(tokens) {
           type: "Variable",
           name: token.value,
           valueType: token.valueType,
-          value: []
+          value: [],
         };
         token = tokens[++current];
 
@@ -132,19 +132,16 @@ export default function parser(tokens) {
         current++;
         const idnode = {
           type: "Identifier",
-          value: tokens[current - 1].value
+          value: tokens[current - 1].value,
         };
 
         if (tokens[current].type === TokenType.PAREN_START) {
           current++;
           const idcenode = {
             type: "CallExpression",
-            callee: {
-              type: "Identifier",
-              value: tokens[current - 2].value
-            },
+            callee: idnode,
             arguments: [],
-            expression: null
+            expression: null,
           };
 
           idcenode.arguments.push(walk());
@@ -157,24 +154,24 @@ export default function parser(tokens) {
       case TokenType.SEPARATOR:
         current++;
         return {
-          type: "Separator"
+          type: "Separator",
         };
 
       case TokenType.IF:
         let inode = {
           type: "IfStatement",
           conditional: [],
-          body: []
+          body: [],
         };
         token = tokens[++current];
 
-        while (token.type !== TokenType.START_BRACE) {
+        while (token.type !== TokenType.BRACE_START) {
           inode.conditional.push(walk());
           token = tokens[current];
         }
         token = tokens[++current];
 
-        while (token.type !== TokenType.END_BRACE) {
+        while (token.type !== TokenType.BRACE_END) {
           inode.body.push(walk());
           token = tokens[current];
         }
@@ -185,16 +182,16 @@ export default function parser(tokens) {
       case TokenType.ELSE:
         let enode = {
           type: "ElseStatement",
-          body: []
+          body: [],
         };
         token = tokens[++current];
 
-        while (token.type !== TokenType.START_BRACE) {
+        while (token.type !== TokenType.BRACE_START) {
           token = tokens[++current];
         }
         current++;
 
-        while (token.type !== TokenType.END_BRACE) {
+        while (token.type !== TokenType.BRACE_END) {
           enode.body.push(walk());
           token = tokens[current];
         }
@@ -203,8 +200,8 @@ export default function parser(tokens) {
         return enode;
 
       case TokenType.END:
-      case TokenType.START_BRACE:
-      case TokenType.END_BRACE:
+      case TokenType.BRACE_START:
+      case TokenType.BRACE_END:
       case TokenType.PAREN_START:
       case TokenType.PAREN_END:
         current++;
@@ -216,7 +213,7 @@ export default function parser(tokens) {
 
   let ast = {
     type: "Program",
-    body: []
+    body: [],
   };
 
   while (current < tokens.length) {

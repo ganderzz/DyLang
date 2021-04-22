@@ -3,6 +3,7 @@ import parser from "./parser";
 import transformer from "./transformer";
 import { tokenize } from "./Tokenize";
 import typeChecker from "./typeChecker";
+import { tokenizer } from "./Utilities/reader";
 
 function getGenerator(type) {
   const fixedType = type ? type.toLowerCase() : "";
@@ -18,14 +19,14 @@ function getGenerator(type) {
   throw new Error("Invalid generator output type given.");
 }
 
-export default (code, flags = { output: "js" }) => {
-  const t = tokenize(code);
-  const p = parser(t);
+export const compile = (code, flags = { output: "js" }) => {
+  const tokens = tokenize(code);
+  const parsed = parser(tokens);
 
-  typeChecker(p);
+  typeChecker(parsed);
 
-  const tr = transformer(p);
-  const g = getGenerator(flags && flags.output)(tr);
+  const transforms = transformer(parsed);
+  const generatedCode = getGenerator(flags && flags.output)(transforms);
 
-  return g;
+  return generatedCode;
 };

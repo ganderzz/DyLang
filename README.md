@@ -8,11 +8,9 @@ Tiny programming language that compiles to JavaScript. The goal of DyLang is to 
 
 This is an ever growing project as I dive into how compilers work.
 
-**Based on [The Super Tiny Compiler](https://github.com/thejameskyle/the-super-tiny-compiler)**
-
 ### Syntax
 
-```go
+```rust
 /*
   Multi
   Line
@@ -22,17 +20,18 @@ This is an ever growing project as I dive into how compilers work.
 // Variables!
 int a = 2 + 3
 decimal b = 2.5
-string foo = 'bar!'
+string foo = "bar!"
 
-fn three() {
-  return 3
+
+fn evaluate() {
+  if b > a {
+    return "yup"
+  } else {
+    return "nope"
+  }
 }
 
-if three() > a {
-  console.log(foo)
-} else {
-  console.log('Nope!')
-}
+console.log(evaluate())
 ```
 
 [View the result](https://ganderzz.github.io/DyLang/)

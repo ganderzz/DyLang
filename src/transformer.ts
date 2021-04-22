@@ -3,7 +3,7 @@ import traverser from "./Utilities/traverser";
 export default function transformer(ast) {
   let newAst = {
     type: "Program",
-    body: []
+    body: [],
   };
 
   ast._context = newAst.body;
@@ -12,44 +12,44 @@ export default function transformer(ast) {
     NumberLiteral: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     DecimalLiteral: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     StringLiteral: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     Operator: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     Identifier: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     Separator: {
       enter(node, parent) {
         parent._context.push(node);
-      }
+      },
     },
 
     Return: {
       enter(node, parent) {
         node._context = [];
         parent._context.push(node);
-      }
+      },
     },
 
     Variable: {
@@ -58,9 +58,9 @@ export default function transformer(ast) {
           type: "Variable",
           name: {
             type: "Identifier",
-            value: node.name
+            value: node.name,
           },
-          value: []
+          value: [],
         };
 
         node._context = expression.value;
@@ -68,19 +68,19 @@ export default function transformer(ast) {
         if (node.value !== "CallExpression") {
           expression = {
             type: "Assignment",
-            expression
+            expression,
           } as any;
         }
 
         if (!node.value) {
           expression = {
             type: "Variable",
-            name: node.name
+            name: node.name,
           } as any;
         }
 
         parent._context.push(expression);
-      }
+      },
     },
 
     Function: {
@@ -88,7 +88,7 @@ export default function transformer(ast) {
         node._context = [];
 
         parent._context.push(node);
-      }
+      },
     },
 
     IfStatement: {
@@ -96,45 +96,42 @@ export default function transformer(ast) {
         let expression = {
           type: "IfStatement",
           conditional: node.conditional,
-          body: []
+          body: [],
         };
 
         node._context = expression.body;
 
         parent._context.push(expression);
-      }
+      },
     },
 
     ElseStatement: {
       enter(node, parent) {
         let expression = {
           type: "ElseStatement",
-          body: []
+          body: [],
         };
 
         node._context = expression.body;
 
         parent._context.push(expression);
-      }
+      },
     },
 
     CallExpression: {
       enter(node, parent) {
         let expression = {
           type: "CallExpression",
-          callee: {
-            type: "Identifier",
-            value: node.name
-          },
+          callee: node.callee,
           arguments: [],
-          expression: null
+          expression: null,
         };
 
         node._context = expression.arguments;
 
         parent._context.push(expression);
-      }
-    }
+      },
+    },
   });
 
   return newAst;
