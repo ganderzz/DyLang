@@ -53,14 +53,71 @@ const tokenFunctions = [
       consumed: 0,
     };
   },
+  function skipComments(input: string, index: number) {
+    if (input[index] !== "/") {
+      return {
+        token: null,
+        consumed: 0,
+      };
+    }
+
+    let consumed = 1;
+    const isMultiLine = input[index + consumed] === "*";
+
+    while (index + consumed < input.length) {
+      consumed++;
+
+      if (!isMultiLine && input[index + consumed] === "\n") {
+        consumed++;
+        break;
+      }
+
+      if (isMultiLine && input[index + consumed] === "*" && input[index + consumed + 1] === "/") {
+        consumed += 2;
+        break;
+      }
+    }
+
+    return {
+      token: null,
+      consumed,
+    };
+  },
+  function tokenizeString(input: string, index: number) {
+    if (input[index] === '"') {
+      let consumed = 1;
+      let value = "";
+
+      while (index + consumed < input.length) {
+        if (input[index + consumed] === '"') {
+          break;
+        }
+
+        value += input[index + consumed];
+        consumed++;
+      }
+
+      return {
+        token: {
+          type: TokenType.STRING,
+          value,
+        },
+        consumed: consumed + 1,
+      };
+    }
+
+    return {
+      token: null,
+      consumed: 0,
+    };
+  },
   tokenizeCharacter(TokenType.PAREN_START, "("),
   tokenizeCharacter(TokenType.PAREN_END, ")"),
   tokenizeCharacter(TokenType.BRACE_START, "{"),
   tokenizeCharacter(TokenType.BRACE_END, "}"),
   tokenizeCharacter(TokenType.ASSIGNMENT, "="),
-  tokenizePattern(TokenType.IF, /(if)/i),
   tokenizePattern(TokenType.IDENTIFIER, /[a-z]/i),
-  tokenizePattern(TokenType.OPERATOR, /[+-/*]/i),
+  tokenizePattern(TokenType.OPERATOR, /[+-/*><]/i),
   tokenizePattern(TokenType.NUMBER, /[0-9.]/i),
 ];
 
@@ -92,6 +149,7 @@ export function tokenizer(input: string): IToken<any>[] {
       throw new TypeError("I dont know what this character is: " + input[index]);
     }
   }
+  console.warn(tokens);
 
   return tokens;
 }

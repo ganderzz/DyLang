@@ -20,7 +20,7 @@ function getGenerator(type) {
 }
 
 export const compile = (code, flags = { output: "js" }) => {
-  const tokens = tokenize(code);
+  const tokens = tokenizer(code);
   const parsed = parser(tokens);
 
   typeChecker(parsed);
