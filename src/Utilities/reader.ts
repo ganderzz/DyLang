@@ -1,44 +1,28 @@
-import { Syntax } from "../Enums/Syntax";
 import { TokenType } from "../Enums/Token";
 import { IToken } from "../Interfaces/IToken";
+import { tokenizeCharacter, tokenizePattern } from "./tokenizers";
 
-function tokenizeCharacter(type, value) {
-  return (input, current) => {
-    if (input[current] !== value) {
+function tokenizeAhead(type: TokenType, fn: (item: string) => boolean) {
+  return function (input: string, index: number) {
+    let consumed = 0;
+    let value = "";
+
+    while (!/\s/.test(input[consumed + index]) && index + consumed < input.length) {
+      value = `${value}${input[index + consumed]}`;
+      consumed++;
+    }
+
+    if (fn(value)) {
       return {
-        consumed: 0,
-        token: null,
+        consumed,
+        token: { type, value },
       };
     }
 
     return {
-      consumed: 1,
-      token: {
-        type,
-        value,
-      },
+      consumed: 0,
+      token: null,
     };
-  };
-}
-
-function tokenizePattern(type, pattern) {
-  return (input, current) => {
-    let char = input[current];
-    let consumedChars = 0;
-
-    if (pattern.test(char)) {
-      let value = "";
-
-      while (char && pattern.test(char)) {
-        value += char;
-        consumedChars++;
-        char = input[current + consumedChars];
-      }
-
-      return { consumed: consumedChars, token: { type, value } };
-    }
-
-    return { consumed: 0, token: null };
   };
 }
 
@@ -111,6 +95,11 @@ const tokenFunctions = [
       consumed: 0,
     };
   },
+  tokenizeAhead(TokenType.VARIABLE, (item) => item === "let"),
+  tokenizeAhead(TokenType.VARIABLE, (item) => item === "string"),
+  tokenizeAhead(TokenType.VARIABLE, (item) => item === "int"),
+  tokenizeAhead(TokenType.VARIABLE, (item) => item === "decimal"),
+  tokenizeAhead(TokenType.FUNCTION_DECLARATION, (item) => item === "fn"),
   tokenizeCharacter(TokenType.PAREN_START, "("),
   tokenizeCharacter(TokenType.PAREN_END, ")"),
   tokenizeCharacter(TokenType.BRACE_START, "{"),
