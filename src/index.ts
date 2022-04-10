@@ -1,25 +1,21 @@
-import { javaScriptGenerator, cppGenerator } from "./Generator";
+import { javaScriptGenerator } from "./Generator";
 import parser from "./parser";
 import transformer from "./transformer";
 import { tokenize } from "./Tokenize";
 import typeChecker from "./typeChecker";
-import { tokenizer } from "./Utilities/reader";
 
-function getGenerator(type) {
+function getGenerator(type: string) {
   const fixedType = type ? type.toLowerCase() : "";
 
   switch (fixedType) {
     case "js":
       return javaScriptGenerator;
-
-    case "cpp":
-      return cppGenerator;
   }
 
   throw new Error("Invalid generator output type given.");
 }
 
-export const compile = (code, flags = { output: "js" }) => {
+export const compile = (code: string, flags = { output: "js" }) => {
   const tokens = tokenize(code);
   const parsed = parser(tokens);
 

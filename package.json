@@ -4,8 +4,9 @@
   "description": "Simplistic programming language",
   "main": "build/index.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --format=iife --global-name=dylang --outdir=build",
-    "build:prod": "esbuild src/index.ts --minify --bundle --format=iife --global-name=dylang --outdir=build",
+    "build": "node esbuild.js",
+    "build:watch": "node esbuild.js watch",
+    "build:prod": "node esbuild.js",
     "test": "jest"
   },
   "repository": {
@@ -19,18 +20,14 @@
   },
   "homepage": "https://github.com/ganderzz/DyLang#readme",
   "devDependencies": {
-    "@types/jest": "^26.0.22",
-    "@types/node": "^14.14.41",
-    "esbuild": "^0.11.12",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.5",
-    "typescript": "^4.2.4",
-    "uglify-js": "^3.13.4"
+    "@types/jest": "27.4.1",
+    "@types/node": "17.0.23",
+    "esbuild": "0.14.34",
+    "jest": "27.5.1",
+    "ts-jest": "27.1.4",
+    "typescript": "4.6.3"
   },
-  "dependencies": {
-    "commander": "^7.2.0",
-    "tslib": "^2.2.0"
-  },
+  "dependencies": {},
   "jest": {
     "testMatch": [
       "**/?(*.)+(spec|test).(j|t)s?(x)"
@@ -42,7 +39,7 @@
       "tsx"
     ],
     "transform": {
-      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "\\.(ts|tsx)$": "ts-jest"
     },
     "testPathIgnorePatterns": [
       "node_modules",
