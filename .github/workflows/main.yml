@@ -8,12 +8,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: borales/actions-yarn@v2.0.0
+      - uses: actions/setup-node@v1
         with:
-          cmd: install
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build:prod
+          node-version: 17
+      - run: npm install
+      - run: npm run build:prod
       - name: cpy
         run: "cp build/index.js docs"
       - name: Deploy to GitHub Pages
